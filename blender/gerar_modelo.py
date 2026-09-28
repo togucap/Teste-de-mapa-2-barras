@@ -36,7 +36,10 @@ COLORS = {
     "led": "#ffffff", "sign": "#e8572a", "cooler": "#f3f3f1", "tv": "#16181c", "screen": "#e7e3f4",
     "tape": "#e8b818", "cageSilver": "#c9ced6", "cagePink": "#e46aa3", "cageSilverMesh": "#c9ced6",
     "cagePinkMesh": "#e46aa3", "product": "#c8a878", "productDark": "#2b2f36", "productColor": "#2a8fd6", "person": "#f2c230", "personHead": "#2b3440", "shirtBlue": "#2a8fd6",
-    "shirtBlack": "#2a2d33", "legs": "#2b3440", "forklift": "#f08c00", "forkliftDark": "#2b3440",
+    "shirtBlack": "#2a2d33", "legs": "#2b3440", "shoes": "#151515",
+    "skin0": "#f1c7a5", "skin1": "#e0ac86", "skin2": "#c68b62", "skin3": "#9a6444", "skin4": "#70472f",
+    "hair0": "#1c1714", "hair1": "#3b2a20", "hair2": "#5e412a", "hair3": "#2a2a2a", "hair4": "#8a7d70",
+    "pants0": "#1f2833", "pants1": "#2e3f5c", "pants2": "#232428", "pants3": "#34405a", "forklift": "#f08c00", "forkliftDark": "#2b3440",
     "path": "#178a4c", "room": "#f3f1ec",
     "tint_storage": "#dfe5f2", "tint_danger": "#f3d4d4", "tint_ship": "#d6ecde", "tint_neutral": "#e0e2e5",
     "tint_sort": "#d8e3f7", "tint_test": "#f5e6c8", "tint_office": "#e3e6ee", "tint_receive": "#e7ddf3",
@@ -110,6 +113,20 @@ class Batch:
             (base + 2, base + 3, base + 7, base + 6), (base + 3, base + 0, base + 4, base + 7),
         ]
 
+    def sphere(self, cx, cy, cz, r, rings=10, seg=16, top_only=False, sz=1.0):
+        """Esfera UV (ou só a calota superior, para cabelo)."""
+        base = len(self.verts)
+        last = rings // 2 + 1 if top_only else rings
+        for i in range(last + 1):
+            th = math.pi * i / rings
+            for j in range(seg):
+                ph = 2 * math.pi * j / seg
+                self.verts.append((cx + r * math.sin(th) * math.cos(ph), cy + r * math.sin(th) * math.sin(ph), cz + r * sz * math.cos(th)))
+        for i in range(last):
+            for j in range(seg):
+                a, b = base + i * seg + j, base + i * seg + (j + 1) % seg
+                self.faces.append((a, a + seg, b + seg, b))
+
     def cylinder(self, cx, cy, r, z0, h, n=12):
         base = len(self.verts)
         for z in (z0, z0 + h):
@@ -153,6 +170,35 @@ def material(name, hex_color, roughness=0.9, metallic=0.0, alpha=1.0, emission=0
     return mat
 
 
+# Texturas procedurais (ruído em coordenadas de objeto, em metros): (escala, intensidade, relevo)
+NOISE = {
+    "slab": (1.2, 0.35, 0.04), "wall": (0.9, 0.4, 0.08), "load": (6.0, 0.25, 0.0), "palletWood": (14.0, 0.45, 0.0),
+    "workTop": (20.0, 0.15, 0.0), "officeWall": (3.0, 0.1, 0.0), "room": (4.0, 0.08, 0.0), "path": (18.0, 0.2, 0.0),
+    "tape": (10.0, 0.25, 0.0), "palletBlue": (25.0, 0.2, 0.0),
+}
+
+
+def add_noise(mat, scale, strength, bump):
+    nt = mat.node_tree
+    bsdf = nt.nodes.get("Principled BSDF")
+    coord = nt.nodes.new("ShaderNodeTexCoord")
+    noise = nt.nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = scale
+    noise.inputs["Detail"].default_value = 8.0
+    nt.links.new(coord.outputs["Object"], noise.inputs["Vector"])
+    mix = nt.nodes.new("ShaderNodeMixRGB")
+    mix.blend_type = "MULTIPLY"
+    mix.inputs["Fac"].default_value = strength
+    mix.inputs["Color1"].default_value = bsdf.inputs["Base Color"].default_value
+    nt.links.new(noise.outputs["Fac"], mix.inputs["Color2"])
+    nt.links.new(mix.outputs["Color"], bsdf.inputs["Base Color"])
+    if bump > 0:
+        bp = nt.nodes.new("ShaderNodeBump")
+        bp.inputs["Strength"].default_value = bump
+        nt.links.new(noise.outputs["Fac"], bp.inputs["Height"])
+        nt.links.new(bp.outputs["Normal"], bsdf.inputs["Normal"])
+
+
 MATERIAL_OPTS = {
     "upright": {"roughness": 0.6, "metallic": 0.15}, "beam": {"roughness": 0.6, "metallic": 0.1},
     "gantry": {"roughness": 0.5, "metallic": 0.3}, "palletBlue": {"roughness": 0.55},
@@ -170,7 +216,11 @@ def flush(batch, name, mat_key, collection):
     mesh.from_pydata(batch.verts, [], batch.faces)
     mesh.update()
     obj = bpy.data.objects.new(name, mesh)
-    obj.data.materials.append(material("DB_" + mat_key, COLORS[mat_key], **MATERIAL_OPTS.get(mat_key, {})))
+    fresh = bpy.data.materials.get("DB_" + mat_key) is None
+    mat = material("DB_" + mat_key, COLORS[mat_key], **MATERIAL_OPTS.get(mat_key, {}))
+    if fresh and mat_key in NOISE:
+        add_noise(mat, *NOISE[mat_key])
+    obj.data.materials.append(mat)
     collection.objects.link(obj)
     return obj
 
@@ -465,23 +515,66 @@ def build(L, tall):
         sx, sy, a = X(u), Y(v), face_angle(u, v)  # não usar cx/cy: são o centro da planta usado por X()/Y()
         B("monitor").box(sx - 0.24, sy - 0.24, sx + 0.24, sy + 0.24, 0.42, 0.08, a, sx, sy)
         bx, by = sx - math.cos(a) * 0.24, sy - math.sin(a) * 0.24
-        B("monitor").box(bx - 0.035, by - 0.23, bx + 0.035, by + 0.23, 0.5, 0.6, a, bx, by)
-        B("gantry").box(sx - 0.03, sy - 0.03, sx + 0.03, sy + 0.03, 0, 0.42)
+        B("monitor").box(bx - 0.04, by - 0.23, bx + 0.04, by + 0.23, 0.5, 0.72, a, bx, by)
+        B("gantry").box(sx - 0.03, sy - 0.03, sx + 0.03, sy + 0.03, 0.07, 0.35)
+        for k in range(5):  # base estrela
+            ang = a + k * 2 * math.pi / 5
+            lx, ly = sx + math.cos(ang) * 0.15, sy + math.sin(ang) * 0.15
+            B("gantry").box(lx - 0.15, ly - 0.02, lx + 0.15, ly + 0.02, 0.04, 0.035, ang, lx, ly)
+        for sd in (-0.26, 0.26):  # braços
+            ax, ay = sx - math.sin(a) * sd, sy + math.cos(a) * sd
+            B("monitor").box(ax - 0.15, ay - 0.03, ax + 0.15, ay + 0.03, 0.62, 0.04, a, ax, ay)
 
-    # Pessoas: em pé (triagem) e sentadas nas estações, com uniforme azul ou preto
+    # Pessoas humanoides: em pé trabalhando (triagem) e sentadas nas estações, com uniforme azul ou preto
+    def human(px, py, a, pose, shirt, seed):
+        ca, sa = math.cos(a), math.sin(a)
+
+        def pt(f, sd):
+            return px + ca * f - sa * sd, py + sa * f + ca * sd
+
+        skin, hair = "skin%d" % (seed % 5), "hair%d" % ((seed * 3 + 1) % 5)
+        pants = "pants%d" % ((seed * 7 + 2) % 4)
+        sit = pose == "sit"
+        hip = 0.5 if sit else 0.93
+        for sd in (-0.085, 0.085):
+            if sit:
+                tx, ty = pt(0.18, sd)
+                B(pants).box(tx - 0.24, ty - 0.068, tx + 0.24, ty + 0.068, 0.44, 0.14, a, tx, ty)
+                kx, ky = pt(0.4, sd)
+                B(pants).cylinder(kx, ky, 0.052, 0.06, 0.42)
+                sx, sy = pt(0.45, sd)
+            else:
+                kx, ky = pt(0, sd)
+                B(pants).cylinder(kx, ky, 0.052, 0.06, 0.43)
+                B(pants).cylinder(kx, ky, 0.068, 0.49, 0.44)
+                sx, sy = pt(0.05, sd)
+            B("shoes").box(sx - 0.125, sy - 0.05, sx + 0.125, sy + 0.05, 0, 0.07, a, sx, sy)
+        B(pants).cylinder(px, py, 0.14, hip - 0.06, 0.14)
+        B(shirt).cylinder(px, py, 0.16, hip + 0.06, 0.47, 16)
+        B(skin).cylinder(px, py, 0.045, hip + 0.53, 0.09)
+        hz = hip + 0.72
+        hx, hy = pt(0.01, 0)
+        B(skin).sphere(hx, hy, hz, 0.1, sz=1.08)
+        bx, by = pt(-0.012, 0)
+        B(hair).sphere(bx, by, hz + 0.012, 0.106, top_only=True, sz=1.05)
+        nx, ny = pt(0.1, 0)
+        B(skin).sphere(nx, ny, hz - 0.01, 0.02, 6, 8)
+        sh = hip + 0.49
+        for sd in (-0.205, 0.205):
+            ux, uy = pt(0.05, sd)
+            B(shirt).cylinder(ux, uy, 0.058, sh - 0.14, 0.14)
+            B(skin).cylinder(ux, uy, 0.045, sh - 0.27, 0.13)
+            fx, fy = pt(0.22, sd * 0.9)
+            B(skin).box(fx - 0.17, fy - 0.038, fx + 0.17, fy + 0.038, sh - 0.33, 0.07, a, fx, fy)
+            hx2, hy2 = pt(0.42, sd * 0.85)
+            B(skin).sphere(hx2, hy2, sh - 0.3, 0.042, 6, 10)
+
     for i, p in enumerate(L["people"]):
-        px, py = X(p[0]), Y(p[1])
-        B("legs").cylinder(px, py, 0.18, 0, 0.78)
-        B("shirtBlack" if i % 3 == 2 else "shirtBlue").cylinder(px, py, 0.19, 0.78, 0.55)
-        B("personHead").cylinder(px, py, 0.13, 1.36, 0.24)
+        human(X(p[0]), Y(p[1]), face_angle(p[0], p[1]), "work", "shirtBlack" if i % 3 == 2 else "shirtBlue", i)
     for i, p in enumerate(L.get("seated", [])):
-        px, py, a = X(p[0]), Y(p[1]), face_angle(p[0], p[1])
-        B("shirtBlack" if i % 3 == 1 else "shirtBlue").cylinder(px, py, 0.19, 0.48, 0.55)
-        B("personHead").cylinder(px, py, 0.13, 1.06, 0.24)
-        tx, ty = px + math.cos(a) * 0.2, py + math.sin(a) * 0.2
-        B("legs").box(tx - 0.21, ty - 0.17, tx + 0.21, ty + 0.17, 0.45, 0.14, a, tx, ty)
-        sx, sy = px + math.cos(a) * 0.38, py + math.sin(a) * 0.38
-        B("legs").box(sx - 0.06, sy - 0.15, sx + 0.06, sy + 0.15, 0, 0.45, a, sx, sy)
+        a = face_angle(p[0], p[1])
+        human(X(p[0]) - math.cos(a) * 0.12, Y(p[1]) - math.sin(a) * 0.12, a, "sit",
+              "shirtBlack" if i % 3 == 1 else "shirtBlue", i + 5)
 
     # Empilhadeiras (posição inicial do visualizador)
     for fl in L["forklifts"]:
@@ -515,7 +608,8 @@ def build(L, tall):
         "Mobiliario": ["desk", "workTop", "workFrame", "bench", "sofa", "stair", "monitor", "gantry", "led",
                        "sign", "cooler", "tv", "screen", "cageSilver", "cagePink", "cageSilverMesh", "cagePinkMesh",
                        "product", "productDark", "productColor"],
-        "Pessoas e empilhadeiras": ["person", "personHead", "shirtBlue", "shirtBlack", "legs", "forklift", "forkliftDark"],
+        "Pessoas e empilhadeiras": ["person", "personHead", "shirtBlue", "shirtBlack", "legs", "shoes", "forklift", "forkliftDark"]
+                                   + [k for k in COLORS if k[:4] in ("skin", "hair") or k.startswith("pants")],
     }
     for gname, keys in groups.items():
         c = coll(gname)

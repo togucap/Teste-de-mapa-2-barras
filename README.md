@@ -24,6 +24,14 @@ plásticos azuis, mesas de tampo preto com monitores, bancadas de teste numerada
 iluminação, postos numerados com câmera e gaiolas metálicas prata e rosa (1,80 × 0,80 m) na triagem, TV dos supervisores, climatizador, cadeiras pretas e
 equipe de uniforme azul ou preto.
 
+As texturas são geradas no próprio navegador (sem arquivos externos, então funcionam no Apps Script): concreto
+polido com manchas, fissuras e juntas serradas; painéis de concreto com escorridos e insertos de içamento;
+papelão kraft com fita e etiqueta de código de barras; tábuas de madeira dos paletes; paletes plásticos vazados;
+montantes perfurados; tampos laminados; telas de sistema nos monitores; porcelanato nos escritórios e fita de
+piso com desgaste. As pessoas são humanoides articulados (em pé trabalhando, sentadas e caminhando, com a
+passada animada no percurso do caminho seguro), com tons de pele, cabelo e calças variados. No Blender, as
+mesmas texturas são feitas com nós de ruído procedural e as pessoas com a mesma anatomia simplificada.
+
 Interações: girar, aproximar e arrastar com mouse ou toque; vistas prontas (Visão geral, Planta, Armazenagem,
 Escritórios); **Percorrer caminho seguro**, um passeio guiado em terceira pessoa pelo trajeto; camadas liga/desliga;
 dica ao passar o mouse; clique para focar numa área. Segue o tema claro/escuro do sistema.
