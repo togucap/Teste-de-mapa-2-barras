@@ -83,7 +83,7 @@
   "zones": [
     { "id": "armazenagem", "name": "Armazenagem", "info": "Porta-paletes duplo · 4 fileiras · 1.235 posições", "rect": [82, 700, 2335, 1838], "tint": "storage", "label": false },
     { "id": "recarga", "name": "Recarga de empilhadeiras", "info": "Área de recarga (reposicionada na revisão da planta)", "rect": [99, 311, 274, 662], "tint": "danger" },
-    { "id": "expedicao-norte", "name": "Expedição", "info": "Estações de expedição e 14 paletes em espera", "rect": [1440, 300, 2110, 560], "tint": "ship" },
+    { "id": "expedicao-norte", "name": "Expedição", "info": "Empilhadeiras manuais, mesas de embalagem, estações com TV e 14 paletes de saída junto à Doca 2", "rect": [290, 300, 2110, 560], "tint": "ship" },
     { "id": "doca-2", "name": "Doca 2", "info": "Doca de carga e descarga no canto nordeste, cercada com tela", "rect": [2122, 295, 2410, 422], "tint": "dock", "door": [2160, 290, 2380, 290] },
     { "id": "neia", "name": "Neia", "info": "Estações da Neia junto à parede oeste, ao lado da Doca 1", "rect": [76, 1837, 380, 2056], "tint": "office" },
     { "id": "doca-1", "name": "Doca 1", "info": "Doca de carga e descarga na parede oeste, cercada com tela", "rect": [76, 2060, 252, 2622], "tint": "dock", "door": [71, 2170, 71, 2510] },
@@ -91,6 +91,7 @@
     { "id": "paletes-apoio", "name": "Paletes de apoio", "info": "14 paletes plásticos demarcados com fita amarela, com caixas em espera", "rect": [360, 2750, 1100, 3060], "tint": "neutral" },
     { "id": "bancadas", "name": "Bancadas de teste", "info": "Bancadas numeradas 01 a 04 com pórticos de iluminação e bancada lateral", "rect": [240, 3095, 1215, 3215], "tint": "test" },
     { "id": "supervisores", "name": "Supervisores", "info": "Ilha com 6 estações, mesa de apoio e TV de acompanhamento", "rect": [76, 2690, 330, 3090], "tint": "office" },
+    { "id": "recebimento-paletes", "name": "Linhas de paletes", "info": "Recebimento · 10 linhas de paletes no piso, com 50 posições demarcadas com fita amarela", "rect": [620, 1895, 2330, 2320], "tint": "receive" },
     { "id": "recebimento", "name": "Recebimento", "info": "Estações de recebimento com divisória baixa", "rect": [1400, 2365, 2410, 2630], "tint": "receive" }
   ],
 
@@ -107,8 +108,17 @@
   ],
 
   "furniture": [
-    { "type": "desk", "rect": [1607, 300, 1818, 337] },
-    { "type": "desk", "rect": [1838, 300, 2048, 337] },
+    { "type": "desk", "rect": [1060, 318, 1420, 366] },
+    { "type": "desk", "rect": [1090, 440, 1390, 488] },
+    { "type": "steeltable", "rect": [640, 360, 800, 430] },
+    { "type": "steeltable", "rect": [820, 360, 980, 430] },
+    { "type": "binshelf", "rect": [575, 350, 630, 430] },
+    { "type": "binshelf", "rect": [990, 350, 1045, 430] },
+    { "type": "worktable", "rect": [820, 298, 980, 330], "monitors": 0, "printers": 2 },
+    { "type": "filmwrap", "rect": [680, 300, 720, 330] },
+    { "type": "filmwrap", "rect": [740, 300, 780, 330] },
+    { "type": "rackcabinet", "rect": [1440, 297, 1485, 335] },
+    { "type": "wallbox", "rect": [1500, 294, 1545, 302] },
     { "type": "worktable", "rect": [76, 1837, 116, 2048] },
     { "type": "worktable", "rect": [116, 2018, 243, 2056] },
     { "type": "worktable", "rect": [243, 2018, 348, 2056] },
@@ -146,7 +156,20 @@
   ],
 
   "floorPallets": [
-    { "zone": "expedicao-norte", "load": "mixed", "grid": { "u0": 1448, "v0": 479, "w": 60, "h": 71, "cols": 14, "rows": 1, "du": 66.4, "dv": 0 } },
+    { "zone": "expedicao-norte", "load": "stack", "pallet": "wood", "occupancy": 0.85, "grid": { "u0": 1448, "v0": 479, "w": 60, "h": 71, "cols": 14, "rows": 1, "du": 66.4, "dv": 0 } },
+    { "zone": "expedicao-norte", "load": "tall", "rects": [[470, 455, 529, 526], [545, 455, 604, 526]] },
+    { "zone": "recebimento-paletes", "load": "stack", "pallet": "wood", "occupancy": 0.72, "rects": [
+      [716, 1919, 774, 1990], [716, 1996, 774, 2066], [716, 2072, 774, 2143], [716, 2149, 774, 2219], [716, 2225, 774, 2296],
+      [863, 1919, 921, 1990], [863, 1996, 921, 2066], [863, 2072, 921, 2143], [863, 2149, 921, 2219], [863, 2225, 921, 2296],
+      [1010, 1919, 1068, 1990], [1010, 1996, 1068, 2066], [1010, 2072, 1068, 2143], [1010, 2149, 1068, 2219], [1010, 2225, 1068, 2296],
+      [1304, 1919, 1362, 1990], [1304, 1996, 1362, 2066], [1304, 2072, 1362, 2143], [1304, 2149, 1362, 2219], [1304, 2225, 1362, 2296],
+      [1451, 1919, 1509, 1990], [1451, 1996, 1509, 2066], [1451, 2072, 1509, 2143], [1451, 2149, 1509, 2219], [1451, 2225, 1509, 2296],
+      [1598, 1919, 1656, 1990], [1598, 1996, 1656, 2066], [1598, 2072, 1656, 2143], [1598, 2149, 1656, 2219], [1598, 2225, 1656, 2296],
+      [1745, 1919, 1803, 1990], [1745, 1996, 1803, 2066], [1745, 2072, 1803, 2143], [1745, 2149, 1803, 2219], [1745, 2225, 1803, 2296],
+      [1892, 1919, 1950, 1990], [1892, 1996, 1950, 2066], [1892, 2072, 1950, 2143], [1892, 2149, 1950, 2219], [1892, 2225, 1950, 2296],
+      [2039, 1919, 2097, 1990], [2039, 1996, 2097, 2066], [2039, 2072, 2097, 2143], [2039, 2149, 2097, 2219], [2039, 2225, 2097, 2296],
+      [2186, 1919, 2244, 1990], [2186, 1996, 2244, 2066], [2186, 2072, 2244, 2143], [2186, 2149, 2244, 2219], [2186, 2225, 2244, 2296]
+    ] },
     { "zone": "paletes-apoio", "load": "tall", "grid": { "u0": 418, "v0": 2786, "w": 59, "h": 71, "cols": 7, "rows": 2, "du": 63.5, "dv": 82 } }
   ],
 
@@ -165,12 +188,14 @@
   ],
 
   "tvs": [
-    { "p": [74, 2808], "w": 1.45, "facing": "east" }
+    { "p": [74, 2808], "w": 1.45, "facing": "east" },
+    { "p": [1240, 294], "w": 1.3, "facing": "south" }
   ],
 
   "chairs": [
-    [128, 1895], [128, 1998], [301, 1995], [180, 1995], [1664, 349], [1769, 349],
-    [1895, 349], [2000, 349], [124, 2748], [224, 2748], [276, 2748], [124, 2872],
+    [128, 1895], [128, 1998], [301, 1995], [180, 1995],
+    [1105, 392, "beige"], [1195, 392, "beige"], [1285, 392, "red"], [1375, 392, "beige"],
+    [1140, 514, "beige"], [1240, 514, "beige"], [1340, 514, "red"], [124, 2748], [224, 2748], [276, 2748], [124, 2872],
     [224, 2872], [276, 2872], [141, 2956], [141, 3086], [244, 3158], [373, 3158],
     [437, 3158], [566, 3158], [619, 3158], [748, 3158], [802, 3158], [931, 3158],
     [1877, 2428], [2249, 2428], [2349, 2428], [1462, 2545], [1660, 2945], [1695, 2945],
@@ -184,12 +209,17 @@
 
   "seated": [
     [244, 3158], [566, 3158], [619, 3158], [931, 3158], [124, 2748], [224, 2872],
-    [276, 2748], [128, 1895], [301, 1995], [1877, 2428], [1769, 349]
+    [276, 2748], [128, 1895], [301, 1995], [1877, 2428], [1195, 392], [1285, 392], [1240, 514]
+  ],
+
+  "stackers": [
+    { "p": [330, 350], "deg": -90 }, { "p": [398, 350], "deg": -90 }
   ],
 
   "people": [
     [398, 2582], [500, 2582], [552, 2582], [655, 2582], [716, 2582],
-    [818, 2582], [868, 2582], [970, 2582], [1022, 2582], [1125, 2582]
+    [818, 2582], [868, 2582], [970, 2582], [1022, 2582], [1125, 2582],
+    [720, 452], [905, 452]
   ],
 
   "path": {

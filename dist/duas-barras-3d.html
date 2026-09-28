@@ -321,6 +321,8 @@
     <button type="button" data-view="overview" aria-pressed="true">Visão geral</button>
     <button type="button" data-view="top" aria-pressed="false">Planta</button>
     <button type="button" data-view="storage" aria-pressed="false">Armazenagem</button>
+    <button type="button" data-view="expedicao" aria-pressed="false">Expedição</button>
+    <button type="button" data-view="recebimento" aria-pressed="false">Recebimento</button>
     <button type="button" data-view="offices" aria-pressed="false">Escritórios</button>
     <button type="button" class="tour" data-view="tour">Percorrer caminho seguro</button>
   </nav>
@@ -426,7 +428,7 @@
   "zones": [
     { "id": "armazenagem", "name": "Armazenagem", "info": "Porta-paletes duplo · 4 fileiras · 1.235 posições", "rect": [82, 700, 2335, 1838], "tint": "storage", "label": false },
     { "id": "recarga", "name": "Recarga de empilhadeiras", "info": "Área de recarga (reposicionada na revisão da planta)", "rect": [99, 311, 274, 662], "tint": "danger" },
-    { "id": "expedicao-norte", "name": "Expedição", "info": "Estações de expedição e 14 paletes em espera", "rect": [1440, 300, 2110, 560], "tint": "ship" },
+    { "id": "expedicao-norte", "name": "Expedição", "info": "Empilhadeiras manuais, mesas de embalagem, estações com TV e 14 paletes de saída junto à Doca 2", "rect": [290, 300, 2110, 560], "tint": "ship" },
     { "id": "doca-2", "name": "Doca 2", "info": "Doca de carga e descarga no canto nordeste, cercada com tela", "rect": [2122, 295, 2410, 422], "tint": "dock", "door": [2160, 290, 2380, 290] },
     { "id": "neia", "name": "Neia", "info": "Estações da Neia junto à parede oeste, ao lado da Doca 1", "rect": [76, 1837, 380, 2056], "tint": "office" },
     { "id": "doca-1", "name": "Doca 1", "info": "Doca de carga e descarga na parede oeste, cercada com tela", "rect": [76, 2060, 252, 2622], "tint": "dock", "door": [71, 2170, 71, 2510] },
@@ -434,6 +436,7 @@
     { "id": "paletes-apoio", "name": "Paletes de apoio", "info": "14 paletes plásticos demarcados com fita amarela, com caixas em espera", "rect": [360, 2750, 1100, 3060], "tint": "neutral" },
     { "id": "bancadas", "name": "Bancadas de teste", "info": "Bancadas numeradas 01 a 04 com pórticos de iluminação e bancada lateral", "rect": [240, 3095, 1215, 3215], "tint": "test" },
     { "id": "supervisores", "name": "Supervisores", "info": "Ilha com 6 estações, mesa de apoio e TV de acompanhamento", "rect": [76, 2690, 330, 3090], "tint": "office" },
+    { "id": "recebimento-paletes", "name": "Linhas de paletes", "info": "Recebimento · 10 linhas de paletes no piso, com 50 posições demarcadas com fita amarela", "rect": [620, 1895, 2330, 2320], "tint": "receive" },
     { "id": "recebimento", "name": "Recebimento", "info": "Estações de recebimento com divisória baixa", "rect": [1400, 2365, 2410, 2630], "tint": "receive" }
   ],
 
@@ -450,8 +453,17 @@
   ],
 
   "furniture": [
-    { "type": "desk", "rect": [1607, 300, 1818, 337] },
-    { "type": "desk", "rect": [1838, 300, 2048, 337] },
+    { "type": "desk", "rect": [1060, 318, 1420, 366] },
+    { "type": "desk", "rect": [1090, 440, 1390, 488] },
+    { "type": "steeltable", "rect": [640, 360, 800, 430] },
+    { "type": "steeltable", "rect": [820, 360, 980, 430] },
+    { "type": "binshelf", "rect": [575, 350, 630, 430] },
+    { "type": "binshelf", "rect": [990, 350, 1045, 430] },
+    { "type": "worktable", "rect": [820, 298, 980, 330], "monitors": 0, "printers": 2 },
+    { "type": "filmwrap", "rect": [680, 300, 720, 330] },
+    { "type": "filmwrap", "rect": [740, 300, 780, 330] },
+    { "type": "rackcabinet", "rect": [1440, 297, 1485, 335] },
+    { "type": "wallbox", "rect": [1500, 294, 1545, 302] },
     { "type": "worktable", "rect": [76, 1837, 116, 2048] },
     { "type": "worktable", "rect": [116, 2018, 243, 2056] },
     { "type": "worktable", "rect": [243, 2018, 348, 2056] },
@@ -489,7 +501,20 @@
   ],
 
   "floorPallets": [
-    { "zone": "expedicao-norte", "load": "mixed", "grid": { "u0": 1448, "v0": 479, "w": 60, "h": 71, "cols": 14, "rows": 1, "du": 66.4, "dv": 0 } },
+    { "zone": "expedicao-norte", "load": "stack", "pallet": "wood", "occupancy": 0.85, "grid": { "u0": 1448, "v0": 479, "w": 60, "h": 71, "cols": 14, "rows": 1, "du": 66.4, "dv": 0 } },
+    { "zone": "expedicao-norte", "load": "tall", "rects": [[470, 455, 529, 526], [545, 455, 604, 526]] },
+    { "zone": "recebimento-paletes", "load": "stack", "pallet": "wood", "occupancy": 0.72, "rects": [
+      [716, 1919, 774, 1990], [716, 1996, 774, 2066], [716, 2072, 774, 2143], [716, 2149, 774, 2219], [716, 2225, 774, 2296],
+      [863, 1919, 921, 1990], [863, 1996, 921, 2066], [863, 2072, 921, 2143], [863, 2149, 921, 2219], [863, 2225, 921, 2296],
+      [1010, 1919, 1068, 1990], [1010, 1996, 1068, 2066], [1010, 2072, 1068, 2143], [1010, 2149, 1068, 2219], [1010, 2225, 1068, 2296],
+      [1304, 1919, 1362, 1990], [1304, 1996, 1362, 2066], [1304, 2072, 1362, 2143], [1304, 2149, 1362, 2219], [1304, 2225, 1362, 2296],
+      [1451, 1919, 1509, 1990], [1451, 1996, 1509, 2066], [1451, 2072, 1509, 2143], [1451, 2149, 1509, 2219], [1451, 2225, 1509, 2296],
+      [1598, 1919, 1656, 1990], [1598, 1996, 1656, 2066], [1598, 2072, 1656, 2143], [1598, 2149, 1656, 2219], [1598, 2225, 1656, 2296],
+      [1745, 1919, 1803, 1990], [1745, 1996, 1803, 2066], [1745, 2072, 1803, 2143], [1745, 2149, 1803, 2219], [1745, 2225, 1803, 2296],
+      [1892, 1919, 1950, 1990], [1892, 1996, 1950, 2066], [1892, 2072, 1950, 2143], [1892, 2149, 1950, 2219], [1892, 2225, 1950, 2296],
+      [2039, 1919, 2097, 1990], [2039, 1996, 2097, 2066], [2039, 2072, 2097, 2143], [2039, 2149, 2097, 2219], [2039, 2225, 2097, 2296],
+      [2186, 1919, 2244, 1990], [2186, 1996, 2244, 2066], [2186, 2072, 2244, 2143], [2186, 2149, 2244, 2219], [2186, 2225, 2244, 2296]
+    ] },
     { "zone": "paletes-apoio", "load": "tall", "grid": { "u0": 418, "v0": 2786, "w": 59, "h": 71, "cols": 7, "rows": 2, "du": 63.5, "dv": 82 } }
   ],
 
@@ -508,12 +533,14 @@
   ],
 
   "tvs": [
-    { "p": [74, 2808], "w": 1.45, "facing": "east" }
+    { "p": [74, 2808], "w": 1.45, "facing": "east" },
+    { "p": [1240, 294], "w": 1.3, "facing": "south" }
   ],
 
   "chairs": [
-    [128, 1895], [128, 1998], [301, 1995], [180, 1995], [1664, 349], [1769, 349],
-    [1895, 349], [2000, 349], [124, 2748], [224, 2748], [276, 2748], [124, 2872],
+    [128, 1895], [128, 1998], [301, 1995], [180, 1995],
+    [1105, 392, "beige"], [1195, 392, "beige"], [1285, 392, "red"], [1375, 392, "beige"],
+    [1140, 514, "beige"], [1240, 514, "beige"], [1340, 514, "red"], [124, 2748], [224, 2748], [276, 2748], [124, 2872],
     [224, 2872], [276, 2872], [141, 2956], [141, 3086], [244, 3158], [373, 3158],
     [437, 3158], [566, 3158], [619, 3158], [748, 3158], [802, 3158], [931, 3158],
     [1877, 2428], [2249, 2428], [2349, 2428], [1462, 2545], [1660, 2945], [1695, 2945],
@@ -527,12 +554,17 @@
 
   "seated": [
     [244, 3158], [566, 3158], [619, 3158], [931, 3158], [124, 2748], [224, 2872],
-    [276, 2748], [128, 1895], [301, 1995], [1877, 2428], [1769, 349]
+    [276, 2748], [128, 1895], [301, 1995], [1877, 2428], [1195, 392], [1285, 392], [1240, 514]
+  ],
+
+  "stackers": [
+    { "p": [330, 350], "deg": -90 }, { "p": [398, 350], "deg": -90 }
   ],
 
   "people": [
     [398, 2582], [500, 2582], [552, 2582], [655, 2582], [716, 2582],
-    [818, 2582], [868, 2582], [970, 2582], [1022, 2582], [1125, 2582]
+    [818, 2582], [868, 2582], [970, 2582], [1022, 2582], [1125, 2582],
+    [720, 452], [905, 452]
   ],
 
   "path": {
@@ -613,7 +645,8 @@
   var PALETTES = {
     light: {
       slab: 0xc9c8c3, slabSide: 0xaeaca5, grid: 0xc6c4be, wall: 0xcbc5ba, louver: 0xaba6bb, door: 0x8e949c,
-      fence: 0x2b2f34, officeWall: 0xe7e5e0, partition: 0xb9bec6, column: 0xc1bcb2, upright: 0x2f55d4, beam: 0xe8a317,
+      fence: 0x2b2f34, officeWall: 0xe7e5e0, partition: 0xb9bec6, column: 0xc1bcb2, upright: 0x8e959c, beam: 0xe8641f,
+      steel: 0xb7bcc2, bin: 0x2e62c9, film: 0x7ad6a0, stackerYellow: 0xf2c230, stackerBlue: 0x2f6fd0,
       palletWood: 0xffffff, palletBlue: 0xffffff, desk: 0xf6f6f4, workTop: 0x24282d, workFrame: 0xc3c6cb,
       bench: 0xc4ccd6, sofa: 0x9aa6b8, stair: 0xd2d6db, monitor: 0x1b1e23, gantry: 0x1f2226, sign: 0xe8572a,
       cooler: 0xf3f3f1, tv: 0x16181c, screen: 0xe7e3f4, tape: 0xe8b818, cageSilver: 0xc9ced6, cagePink: 0xe46aa3,
@@ -625,7 +658,8 @@
     },
     dark: {
       slab: 0x2b2d2f, slabSide: 0x1f2123, grid: 0x36393c, wall: 0x4b4841, louver: 0x4d4b5a, door: 0x5b6169,
-      fence: 0x0e1012, officeWall: 0x56544f, partition: 0x5a6472, column: 0x4d4a44, upright: 0x5b7cf0, beam: 0xe0a02a,
+      fence: 0x0e1012, officeWall: 0x56544f, partition: 0x5a6472, column: 0x4d4a44, upright: 0x6b7178, beam: 0xd85a1c,
+      steel: 0x5f656c, bin: 0x3c6ad0, film: 0x5fb884, stackerYellow: 0xd9ad2b, stackerBlue: 0x3a70cc,
       palletWood: 0x8c8c8c, palletBlue: 0x9a9a9a, desk: 0x4a4f56, workTop: 0x121417, workFrame: 0x5a5f66,
       bench: 0x4a5563, sofa: 0x566278, stair: 0x3e4651, monitor: 0x0b0c0e, gantry: 0x0e0f11, sign: 0xe8572a,
       cooler: 0x8b8d8f, tv: 0x0b0c0e, screen: 0x7b77a3, tape: 0xd6a915, cageSilver: 0x9aa0a8, cagePink: 0xc85a8d,
@@ -694,8 +728,10 @@
   }
   ['slab', 'slabSide', 'officeWall', 'partition', 'column', 'upright', 'beam', 'palletWood', 'palletBlue',
    'desk', 'workTop', 'workFrame', 'bench', 'sofa', 'stair', 'monitor', 'gantry', 'sign', 'cooler', 'tv', 'tape',
-   'person', 'personHead', 'shirtBlue', 'shirtBlack', 'legs', 'forklift', 'forkliftDark', 'cageSilver', 'cagePink'
+   'person', 'personHead', 'shirtBlue', 'shirtBlack', 'legs', 'forklift', 'forkliftDark', 'cageSilver', 'cagePink',
+   'steel', 'bin', 'film', 'stackerYellow', 'stackerBlue'
   ].forEach(function (k) { std(k); });
+  MAT.steel.metalness = 0.55; MAT.steel.roughness = 0.4; MAT.bin.roughness = 0.5;
   MAT.cageSilver.metalness = 0.6; MAT.cageSilver.roughness = 0.35;
   MAT.cagePink.metalness = 0.3; MAT.cagePink.roughness = 0.45;
   MAT.palletBlue.roughness = 0.55;
@@ -1149,7 +1185,7 @@
   // Porta-paletes (instanciados)
   // ---------------------------------------------------------------------------
   var R = L.racks;
-  var uprights = [], beams = [], palletSlots = [];
+  var uprights = [], beams = [], frames = [], palletSlots = [];
   var UP = 0.09, BEAM_H = 0.12, BEAM_T = 0.06;
   var topLevel = R.levels.length - 1;
 
@@ -1162,6 +1198,7 @@
         faces.forEach(function (f) {
           uprights.push([X(u), f[0] + UP / 2]);
           uprights.push([X(u), f[1] - UP / 2]);
+          frames.push([X(u), f[0] + UP / 2, f[1] - UP / 2]);
         });
       });
       for (var i = 0; i < bl.length - 1; i++) bays.push({ a: bl[i], b: bl[i + 1], from: 0 });
@@ -1206,8 +1243,60 @@
   }
   instanced(MAT.upright, uprights, function (u, p, s) { p.set(u[0], 0, u[1]); s.set(UP, R.uprightHeight, UP); }, G.racks);
   instanced(MAT.beam, beams, function (b, p, s) { p.set(b[0], b[1], b[2]); s.set(b[3], BEAM_H, BEAM_T); }, G.racks);
+  // Travamento das cabeceiras: diagonais em zigue-zague e travessas horizontais (como nas fotos)
+  var braces = [], xAxis = new THREE.Vector3(1, 0, 0), bq = new THREE.Quaternion();
+  frames.forEach(function (f) {
+    var step = 1.2, n = Math.floor((R.uprightHeight - 0.3) / step);
+    for (var k = 0; k < n; k++) {
+      var ya = 0.15 + k * step, yb = ya + step, za = k % 2 ? f[2] : f[1], zb = k % 2 ? f[1] : f[2];
+      braces.push({ x: f[0], y0: ya, y1: yb, z0: za, z1: zb });
+    }
+    braces.push({ x: f[0], y0: 0.15, y1: 0.15, z0: f[1], z1: f[2] });
+    braces.push({ x: f[0], y0: 0.15 + n * step, y1: 0.15 + n * step, z0: f[1], z1: f[2] });
+  });
+  var braceMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), MAT.upright, braces.length);
+  braces.forEach(function (b, i) {
+    var dy = b.y1 - b.y0, dz = b.z1 - b.z0, len = Math.hypot(dy, dz);
+    bq.setFromAxisAngle(xAxis, Math.atan2(dz, dy));
+    vPos.set(b.x, (b.y0 + b.y1) / 2, (b.z0 + b.z1) / 2);
+    vScl.set(0.035, len, 0.035);
+    mtx.compose(vPos, bq, vScl);
+    braceMesh.setMatrixAt(i, mtx);
+  });
+  braceMesh.castShadow = true;
+  G.racks.add(braceMesh);
 
   // Paletes no piso (expedição, triagem, apoio)
+  // Pilhas de caixas variadas sobre o palete (1 a 3 camadas, caixas de tamanhos diferentes)
+  var stackBoxes = [];
+  var STACK_TINTS = [0xffffff, 0xffffff, 0xffffff, 0xf2f2f2, 0x3a3f47, 0x9aa0a8, 0x4a6fb5, 0xd8d8d8];
+  function stackOn(cx, cz, y, w, d) {
+    var layers = 1 + Math.floor(rnd() * 3);
+    for (var l = 0; l < layers; l++) {
+      var h = 0.25 + rnd() * 0.35, split = rnd();
+      var cells = split < 0.3 ? [[0, 0, 1, 1]] : split < 0.65 ? [[0, 0, 0.5, 1], [0.5, 0, 1, 1]] : [[0, 0, 0.5, 0.5], [0.5, 0, 1, 0.5], [0, 0.5, 0.5, 1], [0.5, 0.5, 1, 1]];
+      cells.forEach(function (c) {
+        if (l > 0 && rnd() < 0.25) return;
+        var bw = (c[2] - c[0]) * w - 0.03, bd = (c[3] - c[1]) * d - 0.03, bh = h * (0.8 + rnd() * 0.4);
+        stackBoxes.push({ x: cx - w / 2 + (c[0] + c[2]) / 2 * w, z: cz - d / 2 + (c[1] + c[3]) / 2 * d, y: y,
+          w: bw * (0.85 + rnd() * 0.15), d: bd * (0.85 + rnd() * 0.15), h: bh, c: STACK_TINTS[Math.floor(rnd() * STACK_TINTS.length)] });
+      });
+      y += h;
+    }
+  }
+  var stackMesh = null;
+  function buildStacks() {
+    if (!stackBoxes.length) return;
+    stackMesh = instanced(loadMat, stackBoxes, function (b, p, s) { p.set(b.x, b.y, b.z); s.set(b.w, b.h, b.d); }, G.pallets);
+    colorStacks();
+  }
+  function colorStacks() {
+    if (!stackMesh) return;
+    var col = new THREE.Color(), dim = currentTheme() === 'dark' ? 0.62 : 1;
+    stackBoxes.forEach(function (b, i) { col.setHex(b.c).multiplyScalar(dim); stackMesh.setColorAt(i, col); });
+    stackMesh.instanceColor.needsUpdate = true;
+  }
+
   L.floorPallets.forEach(function (fp) {
     var rects = fp.rects ? fp.rects.slice() : [];
     if (fp.grid) {
@@ -1219,25 +1308,28 @@
     }
     rects.forEach(function (rc) {
       var x0 = X(rc[0]), z0 = Z(rc[1]), x1 = X(rc[2]), z1 = Z(rc[3]);
-      var slot = { x: (x0 + x1) / 2, z: (z0 + z1) / 2, y: 0, w: x1 - x0, d: z1 - z0, floor: true };
+      tapeRect(x0 - 0.08, z0 - 0.08, x1 + 0.08, z1 + 0.08, 0.05, G.pallets);
+      if (fp.occupancy !== undefined && rnd() > fp.occupancy) return; // posição demarcada, porém vazia
+      var slot = { x: (x0 + x1) / 2, z: (z0 + z1) / 2, y: 0, w: x1 - x0, d: z1 - z0, floor: true, wood: fp.pallet === 'wood' };
       if (fp.load === 'tall') { slot.h = 0.85; slot.lw = 0.62; slot.ld = 0.95; }
+      else if (fp.load === 'stack') { slot.stack = true; stackOn(slot.x, slot.z, 0.14, slot.w, slot.d); }
       else { slot.h = 0.45 + rnd() * 0.75; slot.lw = 0.8 + rnd() * 0.16; slot.ld = 0.75 + rnd() * 0.19; }
       palletSlots.push(slot);
-      tapeRect(x0 - 0.08, z0 - 0.08, x1 + 0.08, z1 + 0.08, 0.05, G.pallets);
     });
   });
   palletSlots.forEach(function (p) { p.c = Math.floor(rnd() * P.loads.length); });
-  var rackSlots = palletSlots.filter(function (p) { return !p.floor; });
-  var floorSlots = palletSlots.filter(function (p) { return p.floor; });
+  var rackSlots = palletSlots.filter(function (p) { return !p.floor || p.wood; });
+  var floorSlots = palletSlots.filter(function (p) { return p.floor && !p.wood; });
+  var loadSlots = palletSlots.filter(function (p) { return !p.stack; });
   instanced(MAT.palletWood, rackSlots, function (p, pp, s) { pp.set(p.x, p.y, p.z); s.set(p.w, 0.14, p.d); }, G.pallets);
   instanced(MAT.palletBlue, floorSlots, function (p, pp, s) { pp.set(p.x, 0, p.z); s.set(p.w, 0.15, p.d); }, G.pallets);
-  var loadsMesh = instanced(loadMat, palletSlots, function (p, pp, s) {
+  var loadsMesh = instanced(loadMat, loadSlots, function (p, pp, s) {
     pp.set(p.x, p.y + 0.14, p.z);
     s.set(p.w * (p.lw || 0.96), p.h, p.d * (p.ld || 0.94));
   }, G.pallets);
   function colorLoads() {
     var col = new THREE.Color();
-    palletSlots.forEach(function (p, i) { col.setHex(P.loads[p.c]); loadsMesh.setColorAt(i, col); });
+    loadSlots.forEach(function (p, i) { col.setHex(P.loads[p.c]); loadsMesh.setColorAt(i, col); });
     loadsMesh.instanceColor.needsUpdate = true;
   }
   colorLoads();
@@ -1303,6 +1395,53 @@
       led.castShadow = false;
     });
   }
+  // Mesa de embalagem em aço: estrutura cinza, tampo preto, prateleira inferior e caixas pequenas em pilha
+  function steelTable(r) {
+    var x0 = X(r[0]), z0 = Z(r[1]), x1 = X(r[2]), z1 = Z(r[3]);
+    [[x0, z0], [x1, z0], [x0, z1], [x1, z1]].forEach(function (c) {
+      var cx = c[0] + (c[0] === x0 ? 0.04 : -0.04), cz = c[1] + (c[1] === z0 ? 0.04 : -0.04);
+      box(MAT.steel, cx - 0.03, cz - 0.03, cx + 0.03, cz + 0.03, 0, 0.88, G.furniture);
+    });
+    box(MAT.steel, x0 + 0.02, z0 + 0.02, x1 - 0.02, z1 - 0.02, 0.22, 0.03, G.furniture);
+    box(MAT.workTop, x0, z0, x1, z1, 0.88, 0.04, G.furniture);
+    var n = 3 + Math.floor(rnd() * 4);
+    for (var i = 0; i < n; i++) {
+      var bx = x0 + 0.2 + rnd() * (x1 - x0 - 0.4), bz = z0 + 0.2 + rnd() * (z1 - z0 - 0.4);
+      var hh = 0;
+      for (var k = 0, m = 1 + Math.floor(rnd() * 4); k < m; k++) {
+        var h = 0.08 + rnd() * 0.12;
+        stackBoxes.push({ x: bx, z: bz, y: 0.92 + hh, w: 0.18 + rnd() * 0.1, d: 0.12 + rnd() * 0.08, h: h, c: STACK_TINTS[4 + Math.floor(rnd() * 4)] });
+        hh += h;
+      }
+    }
+  }
+  // Estante de aço com caixas plásticas azuis
+  function binShelf(r) {
+    var x0 = X(r[0]), z0 = Z(r[1]), x1 = X(r[2]), z1 = Z(r[3]), H = 1.6;
+    [[x0, z0], [x1, z0], [x0, z1], [x1, z1]].forEach(function (c) { box(MAT.steel, c[0] - 0.02, c[1] - 0.02, c[0] + 0.02, c[1] + 0.02, 0, H, G.furniture); });
+    var alongX = (x1 - x0) >= (z1 - z0);
+    [0.1, 0.62, 1.14].forEach(function (y) {
+      box(MAT.steel, x0, z0, x1, z1, y, 0.02, G.furniture);
+      for (var k = 0; k < 2; k++) {
+        var a = k / 2, b = (k + 1) / 2;
+        if (alongX) box(MAT.bin, x0 + (x1 - x0) * a + 0.02, z0 + 0.04, x0 + (x1 - x0) * b - 0.02, z1 - 0.04, y + 0.02, 0.32, G.furniture);
+        else box(MAT.bin, x0 + 0.04, z0 + (z1 - z0) * a + 0.02, x1 - 0.04, z0 + (z1 - z0) * b - 0.02, y + 0.02, 0.32, G.furniture);
+      }
+    });
+    box(MAT.steel, x0, z0, x1, z1, H - 0.02, 0.02, G.furniture);
+  }
+  // Enroladeira de filme stretch: base, coluna e bobina
+  var rollGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.5, 20).rotateZ(Math.PI / 2);
+  function filmWrap(r) {
+    var cx = X((r[0] + r[2]) / 2), cz = Z((r[1] + r[3]) / 2);
+    box(MAT.steel, cx - 0.25, cz - 0.2, cx + 0.25, cz + 0.2, 0, 0.04, G.furniture);
+    box(MAT.steel, cx - 0.03, cz - 0.03, cx + 0.03, cz + 0.03, 0.04, 1.05, G.furniture);
+    var roll = new THREE.Mesh(rollGeo, MAT.film);
+    roll.position.set(cx, 1.05, cz + 0.12);
+    roll.castShadow = true;
+    G.furniture.add(roll);
+  }
+
   // Climatizador evaporativo (caixa branca com duto superior)
   function cooler(r) {
     var x0 = X(r[0]), z0 = Z(r[1]), x1 = X(r[2]), z1 = Z(r[3]);
@@ -1320,10 +1459,19 @@
       return;
     }
     if (f.type === 'bench') { testBench(f); return; }
+    if (f.type === 'steeltable') { steelTable(f.rect); return; }
+    if (f.type === 'binshelf') { binShelf(f.rect); return; }
+    if (f.type === 'filmwrap') { filmWrap(f.rect); return; }
+    if (f.type === 'rackcabinet') { boxPx(MAT.monitor, f.rect, 0, 2.0, G.furniture); return; }
+    if (f.type === 'wallbox') { boxPx(MAT.steel, f.rect, 1.2, 1.0, G.furniture); return; }
     if (f.type === 'cooler') { cooler(f.rect); return; }
     if (f.type === 'worktable') {
       var wr = worktable(f.rect, G.furniture);
       addMonitors(wr[0], wr[1], wr[2], wr[3], 0.76, f.monitors);
+      for (var pi = 0; pi < (f.printers || 0); pi++) {   // impressoras de etiqueta
+        var px = wr[0] + (wr[2] - wr[0]) * (pi + 0.5) / f.printers, pz = (wr[1] + wr[3]) / 2;
+        box(MAT.monitor, px - 0.13, pz - 0.14, px + 0.13, pz + 0.14, 0.76, 0.24, G.furniture);
+      }
       return;
     }
     if (f.type === 'desk' || f.type === 'table') {
@@ -1363,17 +1511,27 @@
     if (!best || bd < 1) return 0;
     return Math.atan2(-(Z(best[1]) - Z(v)), X(best[0]) - X(u));
   }
-  var chairs = (L.chairs || []).map(function (c) { return { x: X(c[0]), z: Z(c[1]), rot: faceNearest(c[0], c[1]) }; });
+  var CHAIR_COLORS = { black: 0x1f2227, beige: 0xe6d6b4, red: 0xb8322a };
+  var chairs = (L.chairs || []).map(function (c) { return { x: X(c[0]), z: Z(c[1]), rot: faceNearest(c[0], c[1]), color: CHAIR_COLORS[c[2] || 'black'] }; });
+  var chairMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 });
+  function tintChairs(im, list) {
+    var col = new THREE.Color();
+    list.forEach(function (c, i) { im.setColorAt(i, col.setHex(c.color)); });
+    im.instanceColor.needsUpdate = true;
+  }
   if (chairs.length) {
     // Cadeira de escritório: assento, encosto alto, braços, coluna a gás e base estrela com 5 pés
     function offs(c, fwd, side, extraRot) {
       var ca = Math.cos(c.rot), sa = Math.sin(c.rot);
       return { x: c.x + ca * fwd + sa * side, z: c.z - sa * fwd + ca * side, rot: c.rot + (extraRot || 0) };
     }
-    instancedRot(MAT.monitor, chairs, function (c, p, s) { p.set(c.x, 0.42, c.z); s.set(0.5, 0.09, 0.5); }, G.furniture);
-    instancedRot(MAT.monitor, chairs.map(function (c) { return offs(c, -0.25, 0); }), function (c, p, s) { p.set(c.x, 0.5, c.z); s.set(0.08, 0.72, 0.46); }, G.furniture);
-    instancedRot(MAT.monitor, [].concat(chairs.map(function (c) { return offs(c, -0.02, 0.26); }), chairs.map(function (c) { return offs(c, -0.02, -0.26); })),
-      function (c, p, s) { p.set(c.x, 0.62, c.z); s.set(0.3, 0.04, 0.06); }, G.furniture);
+    var seatList = chairs;
+    var backList = chairs.map(function (c) { var o = offs(c, -0.25, 0); o.color = c.color; return o; });
+    var armList = [].concat(chairs.map(function (c) { var o = offs(c, -0.02, 0.26); o.color = c.color; return o; }),
+                            chairs.map(function (c) { var o = offs(c, -0.02, -0.26); o.color = c.color; return o; }));
+    tintChairs(instancedRot(chairMat, seatList, function (c, p, s) { p.set(c.x, 0.42, c.z); s.set(0.5, 0.09, 0.5); }, G.furniture), seatList);
+    tintChairs(instancedRot(chairMat, backList, function (c, p, s) { p.set(c.x, 0.5, c.z); s.set(0.08, 0.78, 0.48); }, G.furniture), backList);
+    tintChairs(instancedRot(chairMat, armList, function (c, p, s) { p.set(c.x, 0.62, c.z); s.set(0.3, 0.04, 0.06); }, G.furniture), armList);
     instancedRot(MAT.gantry, chairs, function (c, p, s) { p.set(c.x, 0.07, c.z); s.set(0.06, 0.35, 0.06); }, G.furniture);
     var legs = [];
     chairs.forEach(function (c) { for (var k = 0; k < 5; k++) legs.push(offs({ x: c.x, z: c.z, rot: c.rot + k * Math.PI * 2 / 5 }, 0.15, 0)); });
@@ -1407,9 +1565,14 @@
 
   // TV de acompanhamento na parede
   (L.tvs || []).forEach(function (tv) {
-    var x = X(tv.p[0]), z = Z(tv.p[1]), w = tv.w;
-    box(MAT.tv, x, z - w / 2, x + 0.05, z + w / 2, 1.6, w * 0.57, G.furniture);
-    box(MAT.screen, x + 0.05, z - w / 2 + 0.03, x + 0.055, z + w / 2 - 0.03, 1.63, w * 0.57 - 0.06, G.furniture);
+    var x = X(tv.p[0]), z = Z(tv.p[1]), w = tv.w, hh = w * 0.57;
+    if (tv.facing === 'south') {
+      box(MAT.tv, x - w / 2, z, x + w / 2, z + 0.05, 1.8, hh, G.furniture);
+      box(MAT.screen, x - w / 2 + 0.03, z + 0.05, x + w / 2 - 0.03, z + 0.055, 1.83, hh - 0.06, G.furniture);
+    } else {
+      box(MAT.tv, x, z - w / 2, x + 0.05, z + w / 2, 1.6, hh, G.furniture);
+      box(MAT.screen, x + 0.05, z - w / 2 + 0.03, x + 0.055, z + w / 2 - 0.03, 1.63, hh - 0.06, G.furniture);
+    }
   });
 
   // Gaiolas metálicas vazadas (prata e rosa) com produtos pequenos nas prateleiras
@@ -1478,6 +1641,31 @@
     products.forEach(function (p, i) { prodMesh.setColorAt(i, pc.setHex(p.c)); });
     prodMesh.instanceColor.needsUpdate = true;
   }
+
+  buildStacks();
+
+  // Empilhadeiras manuais (stackers) paradas junto à recarga: patolas, garfos, mastro e timão
+  (L.stackers || []).forEach(function (st) {
+    var g = new THREE.Group();
+    [-0.3, 0.3].forEach(function (zz) {
+      box(MAT.stackerBlue, 0, zz - 0.05, 1.05, zz + 0.05, 0, 0.09, g);                // patolas
+      box(MAT.steel, 0.1, zz * 0.55 - 0.05, 1.15, zz * 0.55 + 0.05, 0.1, 0.04, g);     // garfos
+      box(MAT.stackerYellow, -0.05, zz - 0.035, 0.03, zz + 0.035, 0, 2.2, g);          // mastro
+    });
+    box(MAT.stackerYellow, -0.05, -0.33, 0.03, 0.33, 2.15, 0.06, g);
+    box(MAT.stackerBlue, -0.05, -0.33, 0.03, 0.33, 1.1, 0.06, g);
+    box(MAT.stackerBlue, -0.45, -0.25, -0.05, 0.25, 0, 0.45, g);                        // unidade hidráulica
+    box(MAT.monitor, -0.55, -0.03, -0.5, 0.03, 0.45, 0.65, g);                           // timão
+    box(MAT.monitor, -0.6, -0.22, -0.5, 0.22, 1.08, 0.05, g);
+    g.traverse(function (o) { if (o.isMesh) o.castShadow = true; });
+    g.position.set(X(st.p[0]), 0, Z(st.p[1]));
+    g.rotation.y = THREE.MathUtils.degToRad(st.deg || 0);
+    var hit = new THREE.Mesh(boxGeo, hitMat);
+    hit.scale.set(1.7, 2.2, 0.8); hit.position.x = 0.3;
+    g.add(hit);
+    makePickable(hit, 'Empilhadeira manual', 'Stacker hidráulico parado junto à área de recarga');
+    G.actors.add(g);
+  });
 
   // Fitas amarelas (instanciadas por camada)
   [G.zones, G.pallets].forEach(function (grp) {
@@ -1742,6 +1930,7 @@
     pathMats.forEach(function (m) { m.map.needsUpdate = true; });
     highlight.material.color.setHex(P.highlight);
     colorLoads();
+    colorStacks();
     var bg = getComputedStyle(document.body).backgroundColor;
     scene.background = new THREE.Color(bg);
     shadowCatcher.material.opacity = currentTheme() === 'dark' ? 0.25 : 0.1;
@@ -1856,6 +2045,12 @@
     storage: function () {
       var t = new THREE.Vector3(X(1207), 2, Z(1270));
       return { pos: t.clone().add(new THREE.Vector3(-13, 17, 21)), target: t };
+    },
+    expedicao: function () {
+      return { pos: new THREE.Vector3(X(1480), 4.2, Z(690)), target: new THREE.Vector3(X(820), 0.6, Z(400)) };
+    },
+    recebimento: function () {
+      return { pos: new THREE.Vector3(X(2250), 7.5, Z(2560)), target: new THREE.Vector3(X(1350), 0.5, Z(2080)) };
     },
     offices: function () {
       var t = new THREE.Vector3(X(1820), 0, Z(2930));

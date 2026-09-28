@@ -14,6 +14,11 @@ página HTML única. Um script do **Blender** gera o mesmo modelo para renders, 
   percorrendo o trajeto.
 - **Áreas**: recebimento, expedição, Neia, triagem, paletes de apoio, bancadas de teste,
   supervisores e recarga de empilhadeiras.
+- **Recebimento**: linhas de paletes de madeira no piso entre a Fileira 4 e as estações de recebimento,
+  demarcadas com fita amarela e com caixas empilhadas (algumas posições vazias), deixando livre o pilar central.
+- **Expedição** (de oeste para leste): empilhadeiras manuais na recarga, mesas de embalagem em aço com estantes
+  de caixas azuis, enroladeiras de filme e impressoras de etiqueta, ilha de mesas brancas com cadeiras gamer
+  (bege e vermelha), TV, rack de rede e quadro elétrico, e os paletes de saída junto à Doca 2.
 - **Docas**: Doca 1 (parede oeste) e Doca 2 (canto nordeste), cercadas com tela e com porta de enrolar.
 - **Escritórios**: recepção e descanso, sala de reunião, escada, vestiários, WC PNE e refeitório.
 - **Empilhadeiras ilustrativas** circulando nos corredores entre fileiras, separadas do caminho seguro.
@@ -32,7 +37,7 @@ piso com desgaste. As pessoas são humanoides articulados (em pé trabalhando, s
 passada animada no percurso do caminho seguro), com tons de pele, cabelo e calças variados. No Blender, as
 mesmas texturas são feitas com nós de ruído procedural e as pessoas com a mesma anatomia simplificada.
 
-Interações: girar, aproximar e arrastar com mouse ou toque; vistas prontas (Visão geral, Planta, Armazenagem,
+Interações: vistas prontas de Expedição e Recebimento; girar, aproximar e arrastar com mouse ou toque; vistas prontas (Visão geral, Planta, Armazenagem,
 Escritórios); **Percorrer caminho seguro**, um passeio guiado em terceira pessoa pelo trajeto; camadas liga/desliga;
 dica ao passar o mouse; clique para focar numa área. Segue o tema claro/escuro do sistema.
 

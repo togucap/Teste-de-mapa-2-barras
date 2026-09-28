@@ -30,11 +30,12 @@ LAYOUT_PATH = ""  # preencha se o script não encontrar o Layout.html sozinho
 COLORS = {
     "slab": "#c9c8c3", "slabSide": "#aeaca5", "wall": "#cbc5ba", "louver": "#aba6bb", "door": "#8e949c",
     "officeWall": "#e7e5e0", "partition": "#b9bec6", "fence": "#2b2f34", "fenceMesh": "#2b2f34",
-    "column": "#c1bcb2", "upright": "#2f55d4", "beam": "#e8a317", "palletWood": "#b58b58",
+    "column": "#c1bcb2", "upright": "#8e959c", "beam": "#e8641f", "palletWood": "#b58b58",
     "palletBlue": "#2f5cc8", "load": "#c8a878", "desk": "#f6f6f4", "workTop": "#24282d", "workFrame": "#c3c6cb",
     "bench": "#c4ccd6", "sofa": "#9aa6b8", "stair": "#d2d6db", "monitor": "#1b1e23", "gantry": "#1f2226",
     "led": "#ffffff", "sign": "#e8572a", "cooler": "#f3f3f1", "tv": "#16181c", "screen": "#e7e3f4",
-    "tape": "#e8b818", "cageSilver": "#c9ced6", "cagePink": "#e46aa3", "cageSilverMesh": "#c9ced6",
+    "tape": "#e8b818", "steel": "#b7bcc2", "bin": "#2e62c9", "film": "#7ad6a0", "stackerYellow": "#f2c230",
+    "stackerBlue": "#2f6fd0", "chairBeige": "#e6d6b4", "chairRed": "#b8322a", "boxDark": "#3a3f47", "cageSilver": "#c9ced6", "cagePink": "#e46aa3", "cageSilverMesh": "#c9ced6",
     "cagePinkMesh": "#e46aa3", "product": "#c8a878", "productDark": "#2b2f36", "productColor": "#2a8fd6", "person": "#f2c230", "personHead": "#2b3440", "shirtBlue": "#2a8fd6",
     "shirtBlack": "#2a2d33", "legs": "#2b3440", "shoes": "#151515",
     "skin0": "#f1c7a5", "skin1": "#e0ac86", "skin2": "#c68b62", "skin3": "#9a6444", "skin4": "#70472f",
@@ -204,7 +205,7 @@ MATERIAL_OPTS = {
     "gantry": {"roughness": 0.5, "metallic": 0.3}, "palletBlue": {"roughness": 0.55},
     "monitor": {"roughness": 0.4}, "fenceMesh": {"alpha": 0.35}, "led": {"emission": 4.0},
     "screen": {"emission": 0.6}, "door": {"roughness": 0.5, "metallic": 0.2},
-    "cageSilver": {"roughness": 0.35, "metallic": 0.6}, "cagePink": {"roughness": 0.45, "metallic": 0.3},
+    "cageSilver": {"roughness": 0.35, "metallic": 0.6}, "steel": {"roughness": 0.4, "metallic": 0.55}, "cagePink": {"roughness": 0.45, "metallic": 0.3},
     "cageSilverMesh": {"alpha": 0.4, "metallic": 0.5}, "cagePinkMesh": {"alpha": 0.4, "metallic": 0.3},
 }
 
@@ -344,6 +345,25 @@ def build(L, tall):
                 for f in faces:
                     for yy in (f[0] + UP / 2, f[1] - UP / 2):
                         B("upright").box(X(u) - UP / 2, yy - UP / 2, X(u) + UP / 2, yy + UP / 2, 0, R["uprightHeight"])
+                    # travamento da cabeceira: diagonais em zigue-zague
+                    ya, yb, step = f[0] + UP / 2, f[1] - UP / 2, 1.2
+                    n_br = int((R["uprightHeight"] - 0.3) // step)
+                    for k in range(n_br):
+                        z_a = 0.15 + k * step
+                        y_s, y_e = (ya, yb) if k % 2 == 0 else (yb, ya)
+                        length = math.hypot(step, y_e - y_s)
+                        ang = math.atan2(step, y_e - y_s)
+                        ym_, zm_ = (y_s + y_e) / 2, z_a + step / 2
+                        # caixa longa girada no plano Y-Z
+                        base = len(B("upright").verts)
+                        hl, t = length / 2, 0.018
+                        ca, sa = math.cos(ang), math.sin(ang)
+                        for dx in (-t, t):
+                            for (ly, lz) in ((-hl, -t), (hl, -t), (hl, t), (-hl, t)):
+                                B("upright").verts.append((X(u) + dx, ym_ + ly * ca - lz * sa, zm_ + ly * sa + lz * ca))
+                        B("upright").faces += [(base + 0, base + 1, base + 2, base + 3), (base + 4, base + 7, base + 6, base + 5),
+                                               (base + 0, base + 4, base + 5, base + 1), (base + 1, base + 5, base + 6, base + 2),
+                                               (base + 2, base + 6, base + 7, base + 3), (base + 3, base + 7, base + 4, base + 0)]
             bays += [(bl[i], bl[i + 1], 0) for i in range(len(bl) - 1)]
         bays.append((R["bays"]["tunnel"][0], R["bays"]["tunnel"][1], R["tunnelFirstLevel"]))
         for ua, ub, first in bays:
@@ -373,16 +393,32 @@ def build(L, tall):
                 for c in range(g["cols"]):
                     u0, v0 = g["u0"] + c * g["du"], g["v0"] + r * g["dv"]
                     rects.append([u0, v0, u0 + g["w"], v0 + g["h"]])
-        for rc in rects:  # paletes plásticos azuis demarcados com fita amarela
-            rect_box("palletBlue", rc, 0, 0.15)
+        for rc in rects:  # paletes no piso demarcados com fita amarela
+            tape_rect(X(rc[0]) - 0.08, Y(rc[3]) - 0.08, X(rc[2]) + 0.08, Y(rc[1]) + 0.08, 0.05)
+            if "occupancy" in fp and rng.random() > fp["occupancy"]:
+                continue
+            wood = fp.get("pallet") == "wood"
+            rect_box("palletWood" if wood else "palletBlue", rc, 0, 0.14 if wood else 0.15)
             w, d = (rc[2] - rc[0]) / S, (rc[3] - rc[1]) / S
             pxc, pyc = X((rc[0] + rc[2]) / 2), Y((rc[1] + rc[3]) / 2)
+            if fp.get("load") == "stack":  # pilha de caixas variadas
+                z = 0.14
+                for _ in range(1 + int(rng.random() * 3)):
+                    h = 0.25 + rng.random() * 0.35
+                    sp = rng.random()
+                    cells = [(0, 0, 1, 1)] if sp < 0.3 else [(0, 0, .5, 1), (.5, 0, 1, 1)] if sp < 0.65 else \
+                        [(0, 0, .5, .5), (.5, 0, 1, .5), (0, .5, .5, 1), (.5, .5, 1, 1)]
+                    for c in cells:
+                        bw, bd = (c[2] - c[0]) * w - 0.03, (c[3] - c[1]) * d - 0.03
+                        bx, by = pxc - w / 2 + (c[0] + c[2]) / 2 * w, pyc - d / 2 + (c[1] + c[3]) / 2 * d
+                        B("boxDark" if rng.random() < 0.2 else "load").box(bx - bw / 2, by - bd / 2, bx + bw / 2, by + bd / 2, z, h * (0.8 + rng.random() * 0.4))
+                    z += h
+                continue
             if fp.get("load") == "tall":
                 lw, ld, h = 0.31, 0.475, 0.85
             else:
                 lw, ld, h = 0.4 + rng.random() * 0.08, 0.37 + rng.random() * 0.1, 0.45 + rng.random() * 0.75
             B("load").box(pxc - w * lw, pyc - d * ld, pxc + w * lw, pyc + d * ld, 0.15, h)
-            tape_rect(X(rc[0]) - 0.08, Y(rc[3]) - 0.08, X(rc[2]) + 0.08, Y(rc[1]) + 0.08, 0.05)
 
     # Mobiliário
     furn = {"counter": ("bench", 0.9), "cabinet": ("bench", 1.8), "sofa": ("sofa", 0.5)}
@@ -444,6 +480,31 @@ def build(L, tall):
                 B("gantry").box(min(xm, xm + dx), yc - 0.02, max(xm, xm + dx), yc + 0.02, H - 0.02, 0.04)
                 B("led").box(xm + dx - 0.03, y0 + 0.2, xm + dx + 0.03, y1 - 0.2, H - 0.06, 0.03)
             continue
+        if t == "steeltable":  # mesa de embalagem em aço com tampo preto
+            for px_, py_ in ((x0 + .04, y0 + .04), (x1 - .04, y0 + .04), (x0 + .04, y1 - .04), (x1 - .04, y1 - .04)):
+                B("steel").box(px_ - .03, py_ - .03, px_ + .03, py_ + .03, 0, 0.88)
+            B("steel").box(x0 + .02, y0 + .02, x1 - .02, y1 - .02, 0.22, 0.03)
+            B("workTop").box(x0, y0, x1, y1, 0.88, 0.04)
+            continue
+        if t == "binshelf":  # estante de aço com caixas plásticas azuis
+            for px_, py_ in ((x0, y0), (x1, y0), (x0, y1), (x1, y1)):
+                B("steel").box(px_ - .02, py_ - .02, px_ + .02, py_ + .02, 0, 1.6)
+            for z in (0.1, 0.62, 1.14):
+                B("steel").box(x0, y0, x1, y1, z, 0.02)
+                B("bin").box(x0 + .04, y0 + .04, x1 - .04, y1 - .04, z + .02, 0.32)
+            continue
+        if t == "filmwrap":  # enroladeira de filme stretch
+            fx, fy = (x0 + x1) / 2, (y0 + y1) / 2
+            B("steel").box(fx - .25, fy - .2, fx + .25, fy + .2, 0, 0.04)
+            B("steel").box(fx - .03, fy - .03, fx + .03, fy + .03, 0.04, 1.05)
+            B("film").box(fx - .25, fy - .24, fx + .25, fy, 0.93, 0.24)
+            continue
+        if t == "rackcabinet":
+            B("monitor").box(x0, y0, x1, y1, 0, 2.0)
+            continue
+        if t == "wallbox":
+            B("steel").box(x0, y0, x1, y1, 1.2, 1.0)
+            continue
         if t == "cooler":  # climatizador evaporativo
             B("cooler").box(x0, y0, x1, y1, 0, 1.5)
             B("cooler").box(x0 + 0.15, y0 + 0.1, x1 - 0.15, y1 - 0.1, 1.5, 0.7)
@@ -494,8 +555,30 @@ def build(L, tall):
     # TV de acompanhamento na parede
     for tv in L.get("tvs", []):
         px, py, w = X(tv["p"][0]), Y(tv["p"][1]), tv["w"]
-        B("tv").box(px, py - w / 2, px + 0.05, py + w / 2, 1.6, w * 0.57)
-        B("screen").box(px + 0.05, py - w / 2 + 0.03, px + 0.055, py + w / 2 - 0.03, 1.63, w * 0.57 - 0.06)
+        if tv.get("facing") == "south":
+            B("tv").box(px - w / 2, py - 0.05, px + w / 2, py, 1.8, w * 0.57)
+            B("screen").box(px - w / 2 + 0.03, py - 0.055, px + w / 2 - 0.03, py - 0.05, 1.83, w * 0.57 - 0.06)
+        else:
+            B("tv").box(px, py - w / 2, px + 0.05, py + w / 2, 1.6, w * 0.57)
+            B("screen").box(px + 0.05, py - w / 2 + 0.03, px + 0.055, py + w / 2 - 0.03, 1.63, w * 0.57 - 0.06)
+
+    # Empilhadeiras manuais (stackers) junto à recarga
+    for st in L.get("stackers", []):
+        ox, oy = X(st["p"][0]), Y(st["p"][1])
+        a = -math.radians(st.get("deg", 0))
+        ca, sa = math.cos(a), math.sin(a)
+
+        def sbox(key, f0, s0, f1, s1, z0, h):
+            fm, sm = (f0 + f1) / 2, (s0 + s1) / 2
+            bx, by = ox + ca * fm - sa * sm, oy + sa * fm + ca * sm
+            B(key).box(bx - (f1 - f0) / 2, by - (s1 - s0) / 2, bx + (f1 - f0) / 2, by + (s1 - s0) / 2, z0, h, a, bx, by)
+        for sd in (-0.3, 0.3):
+            sbox("stackerBlue", 0, sd - .05, 1.05, sd + .05, 0, 0.09)
+            sbox("steel", 0.1, sd * .55 - .05, 1.15, sd * .55 + .05, 0.1, 0.04)
+            sbox("stackerYellow", -.05, sd - .035, .03, sd + .035, 0, 2.2)
+        sbox("stackerYellow", -.05, -.33, .03, .33, 2.15, 0.06)
+        sbox("stackerBlue", -.45, -.25, -.05, .25, 0, 0.45)
+        sbox("monitor", -.55, -.03, -.5, .03, 0.45, 0.65)
 
     # Cadeiras viradas para a mesa mais próxima
     tables = [f["rect"] for f in L["furniture"] if re.search("desk|table|worktable|bench|counter", f["type"])]
@@ -511,11 +594,14 @@ def build(L, tall):
             return 0.0
         return math.atan2(Y(best[1]) - Y(v), X(best[0]) - X(u))
 
-    for u, v in L.get("chairs", []):
+    chair_keys = {"beige": "chairBeige", "red": "chairRed"}
+    for c in L.get("chairs", []):
+        u, v = c[0], c[1]
+        ck = chair_keys.get(c[2] if len(c) > 2 else "", "monitor")
         sx, sy, a = X(u), Y(v), face_angle(u, v)  # não usar cx/cy: são o centro da planta usado por X()/Y()
-        B("monitor").box(sx - 0.24, sy - 0.24, sx + 0.24, sy + 0.24, 0.42, 0.08, a, sx, sy)
+        B(ck).box(sx - 0.24, sy - 0.24, sx + 0.24, sy + 0.24, 0.42, 0.08, a, sx, sy)
         bx, by = sx - math.cos(a) * 0.24, sy - math.sin(a) * 0.24
-        B("monitor").box(bx - 0.04, by - 0.23, bx + 0.04, by + 0.23, 0.5, 0.72, a, bx, by)
+        B(ck).box(bx - 0.04, by - 0.24, bx + 0.04, by + 0.24, 0.5, 0.78, a, bx, by)
         B("gantry").box(sx - 0.03, sy - 0.03, sx + 0.03, sy + 0.03, 0.07, 0.35)
         for k in range(5):  # base estrela
             ang = a + k * 2 * math.pi / 5
@@ -601,14 +687,14 @@ def build(L, tall):
     groups = {
         "Estrutura": ["slab", "slabSide", "wall", "louver", "door", "column", "fence", "fenceMesh"],
         "Porta-paletes": ["upright", "beam"],
-        "Paletes": ["palletWood", "palletBlue", "load"],
+        "Paletes": ["palletWood", "palletBlue", "load", "boxDark"],
         "Caminho seguro": ["path"],
         "Areas": [k for k in COLORS if k.startswith("tint_")] + ["tape"],
         "Escritorios": ["officeWall", "partition", "room"],
         "Mobiliario": ["desk", "workTop", "workFrame", "bench", "sofa", "stair", "monitor", "gantry", "led",
                        "sign", "cooler", "tv", "screen", "cageSilver", "cagePink", "cageSilverMesh", "cagePinkMesh",
-                       "product", "productDark", "productColor"],
-        "Pessoas e empilhadeiras": ["person", "personHead", "shirtBlue", "shirtBlack", "legs", "shoes", "forklift", "forkliftDark"]
+                       "product", "productDark", "productColor", "steel", "bin", "film", "chairBeige", "chairRed"],
+        "Pessoas e empilhadeiras": ["person", "personHead", "shirtBlue", "shirtBlack", "legs", "shoes", "forklift", "forkliftDark", "stackerYellow", "stackerBlue"]
                                    + [k for k in COLORS if k[:4] in ("skin", "hair") or k.startswith("pants")],
     }
     for gname, keys in groups.items():
