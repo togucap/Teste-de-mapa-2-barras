@@ -37,8 +37,8 @@ piso com desgaste. As pessoas são humanoides articulados (em pé trabalhando, s
 passada animada no percurso do caminho seguro), com tons de pele, cabelo e calças variados. No Blender, as
 mesmas texturas são feitas com nós de ruído procedural e as pessoas com a mesma anatomia simplificada.
 
-Interações: vistas prontas de Expedição e Recebimento; girar, aproximar e arrastar com mouse ou toque; vistas prontas (Visão geral, Planta, Armazenagem,
-Escritórios); **Percorrer caminho seguro**, um passeio guiado em terceira pessoa pelo trajeto; camadas liga/desliga;
+Interações: girar, aproximar e arrastar com mouse ou toque; vistas prontas (Visão geral, Planta, Armazenagem,
+Expedição, Recebimento, Escritórios); **Percorrer caminho seguro**, um passeio guiado em terceira pessoa pelo trajeto; camadas liga/desliga;
 dica ao passar o mouse; clique para focar numa área. Segue o tema claro/escuro do sistema.
 
 ## Estrutura
