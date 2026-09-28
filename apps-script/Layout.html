@@ -85,9 +85,9 @@
     { "id": "recarga", "name": "Recarga de empilhadeiras", "info": "Área de recarga (reposicionada na revisão da planta)", "rect": [99, 311, 274, 662], "tint": "danger" },
     { "id": "expedicao-norte", "name": "Expedição", "info": "Estações de expedição e 14 paletes em espera", "rect": [1440, 300, 2110, 560], "tint": "ship" },
     { "id": "doca-2", "name": "Doca 2", "info": "Doca de carga e descarga no canto nordeste, cercada com tela", "rect": [2122, 295, 2410, 422], "tint": "dock", "door": [2160, 290, 2380, 290] },
-    { "id": "neia", "name": "Neia", "info": "Estações da Neia junto à parede oeste, ao lado da Doca 1", "rect": [76, 1837, 470, 2056], "tint": "office" },
+    { "id": "neia", "name": "Neia", "info": "Estações da Neia junto à parede oeste, ao lado da Doca 1", "rect": [76, 1837, 380, 2056], "tint": "office" },
     { "id": "doca-1", "name": "Doca 1", "info": "Doca de carga e descarga na parede oeste, cercada com tela", "rect": [76, 2060, 252, 2622], "tint": "dock", "door": [71, 2170, 71, 2510] },
-    { "id": "triagem", "name": "Triagem", "info": "5 mesas de triagem com 10 postos numerados, câmeras e paletes de abastecimento", "rect": [360, 2290, 1100, 2700], "tint": "sort" },
+    { "id": "triagem", "name": "Triagem", "info": "5 mesas de triagem com 10 postos numerados, câmeras e gaiolas metálicas de produtos pequenos", "rect": [360, 2290, 1100, 2700], "tint": "sort" },
     { "id": "paletes-apoio", "name": "Paletes de apoio", "info": "14 paletes plásticos demarcados com fita amarela, com caixas em espera", "rect": [360, 2750, 1100, 3060], "tint": "neutral" },
     { "id": "bancadas", "name": "Bancadas de teste", "info": "Bancadas numeradas 01 a 04 com pórticos de iluminação e bancada lateral", "rect": [240, 3095, 1215, 3215], "tint": "test" },
     { "id": "supervisores", "name": "Supervisores", "info": "Ilha com 6 estações, mesa de apoio e TV de acompanhamento", "rect": [76, 2690, 330, 3090], "tint": "office" },
@@ -110,8 +110,8 @@
     { "type": "desk", "rect": [1607, 300, 1818, 337] },
     { "type": "desk", "rect": [1838, 300, 2048, 337] },
     { "type": "worktable", "rect": [76, 1837, 116, 2048] },
+    { "type": "worktable", "rect": [116, 2018, 243, 2056] },
     { "type": "worktable", "rect": [243, 2018, 348, 2056] },
-    { "type": "worktable", "rect": [357, 2018, 462, 2056] },
     { "type": "worktable", "rect": [411, 2523, 488, 2628] },
     { "type": "worktable", "rect": [565, 2523, 642, 2628] },
     { "type": "worktable", "rect": [728, 2523, 805, 2628] },
@@ -147,12 +147,17 @@
 
   "floorPallets": [
     { "zone": "expedicao-norte", "load": "mixed", "grid": { "u0": 1448, "v0": 479, "w": 60, "h": 71, "cols": 14, "rows": 1, "du": 66.4, "dv": 0 } },
-    { "zone": "triagem", "load": "mixed", "rects": [
-      [405, 2350, 476, 2408], [559, 2350, 630, 2408], [722, 2350, 793, 2408], [883, 2350, 954, 2408], [1037, 2350, 1108, 2408],
-      [405, 2413, 476, 2472], [559, 2413, 630, 2472], [722, 2413, 793, 2472], [883, 2413, 954, 2472], [1037, 2413, 1108, 2472]
-    ] },
     { "zone": "paletes-apoio", "load": "tall", "grid": { "u0": 418, "v0": 2786, "w": 59, "h": 71, "cols": 7, "rows": 2, "du": 63.5, "dv": 82 } }
   ],
+
+  "cages": {
+    "info": "Gaiola metálica vazada para produtos pequenos · cerca de 1,80 m de altura e 0,80 m de largura",
+    "size": [0.8, 0.72, 1.8],
+    "rects": [
+      [405, 2350, 476, 2408], [559, 2350, 630, 2408], [722, 2350, 793, 2408], [883, 2350, 954, 2408], [1037, 2350, 1108, 2408],
+      [405, 2413, 476, 2472], [559, 2413, 630, 2472], [722, 2413, 793, 2472], [883, 2413, 954, 2472], [1037, 2413, 1108, 2472]
+    ]
+  },
 
   "posts": [
     [398, 2512, 1], [500, 2512, 2], [552, 2512, 3], [655, 2512, 4], [716, 2512, 5],
@@ -164,7 +169,7 @@
   ],
 
   "chairs": [
-    [128, 1895], [128, 1998], [301, 1995], [414, 1995], [1664, 349], [1769, 349],
+    [128, 1895], [128, 1998], [301, 1995], [180, 1995], [1664, 349], [1769, 349],
     [1895, 349], [2000, 349], [124, 2748], [224, 2748], [276, 2748], [124, 2872],
     [224, 2872], [276, 2872], [141, 2956], [141, 3086], [244, 3158], [373, 3158],
     [437, 3158], [566, 3158], [619, 3158], [748, 3158], [802, 3158], [931, 3158],

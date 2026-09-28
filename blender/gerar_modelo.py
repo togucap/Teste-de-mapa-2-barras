@@ -34,7 +34,8 @@ COLORS = {
     "palletBlue": "#2f5cc8", "load": "#c8a878", "desk": "#f6f6f4", "workTop": "#24282d", "workFrame": "#c3c6cb",
     "bench": "#c4ccd6", "sofa": "#9aa6b8", "stair": "#d2d6db", "monitor": "#1b1e23", "gantry": "#1f2226",
     "led": "#ffffff", "sign": "#e8572a", "cooler": "#f3f3f1", "tv": "#16181c", "screen": "#e7e3f4",
-    "tape": "#e8b818", "person": "#f2c230", "personHead": "#2b3440", "shirtBlue": "#2a8fd6",
+    "tape": "#e8b818", "cageSilver": "#c9ced6", "cagePink": "#e46aa3", "cageSilverMesh": "#c9ced6",
+    "cagePinkMesh": "#e46aa3", "product": "#c8a878", "productDark": "#2b2f36", "productColor": "#2a8fd6", "person": "#f2c230", "personHead": "#2b3440", "shirtBlue": "#2a8fd6",
     "shirtBlack": "#2a2d33", "legs": "#2b3440", "forklift": "#f08c00", "forkliftDark": "#2b3440",
     "path": "#178a4c", "room": "#f3f1ec",
     "tint_storage": "#dfe5f2", "tint_danger": "#f3d4d4", "tint_ship": "#d6ecde", "tint_neutral": "#e0e2e5",
@@ -157,6 +158,8 @@ MATERIAL_OPTS = {
     "gantry": {"roughness": 0.5, "metallic": 0.3}, "palletBlue": {"roughness": 0.55},
     "monitor": {"roughness": 0.4}, "fenceMesh": {"alpha": 0.35}, "led": {"emission": 4.0},
     "screen": {"emission": 0.6}, "door": {"roughness": 0.5, "metallic": 0.2},
+    "cageSilver": {"roughness": 0.35, "metallic": 0.6}, "cagePink": {"roughness": 0.45, "metallic": 0.3},
+    "cageSilverMesh": {"alpha": 0.4, "metallic": 0.5}, "cagePinkMesh": {"alpha": 0.4, "metallic": 0.3},
 }
 
 
@@ -404,6 +407,33 @@ def build(L, tall):
         key, h = furn.get(t, ("desk", 0.75))
         rect_box(key, r, 0, h)
 
+    # Gaiolas metálicas vazadas da triagem (prata e rosa), frente aberta para as mesas, com produtos pequenos
+    cages = L.get("cages")
+    for i, rc in enumerate(cages["rects"] if cages else []):
+        cw, cd, H = cages["size"]
+        key = "cageSilver" if i % 2 == 0 else "cagePink"
+        gx, gy = X((rc[0] + rc[2]) / 2), Y((rc[1] + rc[3]) / 2)
+        x0, x1, y0, y1, t = gx - cw / 2, gx + cw / 2, gy - cd / 2, gy + cd / 2, 0.03
+        for px, py in ((x0, y0), (x1, y0), (x0, y1), (x1, y1)):
+            B("monitor").box(px - 0.05, py - 0.05, px + 0.05, py + 0.05, 0, 0.12)
+            B(key).box(px - t, py - t, px + t, py + t, 0.12, H - 0.12)
+        B(key).box(x0, y0, x1, y1, 0.12, 0.04)
+        for a in ((x0, y0, x1, y0 + t), (x0, y1 - t, x1, y1), (x0, y0, x0 + t, y1), (x1 - t, y0, x1, y1)):
+            B(key).box(a[0], a[1], a[2], a[3], H - 0.03, 0.03)
+        B(key + "Mesh").box(x0, y1 - 0.005, x1, y1, 0.16, H - 0.16)  # fundo (norte)
+        B(key + "Mesh").box(x0, y0, x0 + 0.005, y1, 0.16, H - 0.16)  # laterais
+        B(key + "Mesh").box(x1 - 0.005, y0, x1, y1, 0.16, H - 0.16)
+        for z in (0.72, 1.28):
+            B(key + "Mesh").box(x0, y0, x1, y1, z, 0.005)
+        for z in (0.16, 0.72, 1.28):
+            x = x0 + 0.04
+            for _ in range(2 + int(rng.random() * 3)):
+                w, h, d = 0.12 + rng.random() * 0.14, 0.1 + rng.random() * 0.25, 0.2 + rng.random() * 0.35
+                if x + w > x1 - 0.04:
+                    break
+                B(rng.choice(["product", "productDark", "productColor"])).box(x, y1 - 0.06 - d, x + w, y1 - 0.06, z + 0.01, h)
+                x += w + 0.03
+
     # Postos numerados da triagem: poste, placa laranja e câmera
     for u, v, _num in L.get("posts", []):
         px, py = X(u), Y(v)
@@ -483,7 +513,8 @@ def build(L, tall):
         "Areas": [k for k in COLORS if k.startswith("tint_")] + ["tape"],
         "Escritorios": ["officeWall", "partition", "room"],
         "Mobiliario": ["desk", "workTop", "workFrame", "bench", "sofa", "stair", "monitor", "gantry", "led",
-                       "sign", "cooler", "tv", "screen"],
+                       "sign", "cooler", "tv", "screen", "cageSilver", "cagePink", "cageSilverMesh", "cagePinkMesh",
+                       "product", "productDark", "productColor"],
         "Pessoas e empilhadeiras": ["person", "personHead", "shirtBlue", "shirtBlack", "legs", "forklift", "forkliftDark"],
     }
     for gname, keys in groups.items():

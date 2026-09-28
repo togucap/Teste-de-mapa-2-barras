@@ -21,7 +21,7 @@ página HTML única. Um script do **Blender** gera o mesmo modelo para renders, 
 O acabamento visual segue fotos da operação: piso de concreto, paredes de concreto pré-moldado com
 venezianas no alto (visíveis com "Paredes em altura real"), fita amarela demarcando áreas e paletes, paletes
 plásticos azuis, mesas de tampo preto com monitores, bancadas de teste numeradas 01–04 com pórticos de
-iluminação, postos numerados com câmera na triagem, TV dos supervisores, climatizador, cadeiras pretas e
+iluminação, postos numerados com câmera e gaiolas metálicas prata e rosa (1,80 × 0,80 m) na triagem, TV dos supervisores, climatizador, cadeiras pretas e
 equipe de uniforme azul ou preto.
 
 Interações: girar, aproximar e arrastar com mouse ou toque; vistas prontas (Visão geral, Planta, Armazenagem,
@@ -124,7 +124,8 @@ Tudo está em `apps-script/Layout.html`, em **pixels da imagem `docs/planta-refe
 - `zones` e `rooms`: retângulos `[x0, y0, x1, y1]`, com nome e descrição da dica;
 - `path.segments`: polilinhas do caminho seguro; `path.tour` é a ordem do passeio guiado;
 - `furniture` (`worktable` = tampo preto; `bench` com `num` = bancada de teste numerada; `cooler` = climatizador),
-  `floorPallets` (`load`: `tall` ou `mixed`), `posts` (postos numerados da triagem), `tvs`, `chairs`,
+  `floorPallets` (`load`: `tall` ou `mixed`), `cages` (gaiolas da triagem), `posts` (postos numerados da
+  triagem), `tvs`, `chairs`,
   `seated` (pessoas sentadas), `people` (em pé), `forklifts`;
 - a porta de enrolar de uma doca é o campo `door` da área (segmento sobre a parede externa).
 
