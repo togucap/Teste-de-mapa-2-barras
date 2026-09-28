@@ -12,10 +12,17 @@ página HTML única. Um script do **Blender** gera o mesmo modelo para renders, 
   túnel de pedestres no meio.
 - **Caminho seguro**: rota de pedestres demarcada no piso, conforme as linhas da planta, com um pedestre
   percorrendo o trajeto.
-- **Áreas**: recebimento, expedição (norte e oeste), triagem, paletes de apoio, bancadas de teste,
+- **Áreas**: recebimento, expedição, Neia, triagem, paletes de apoio, bancadas de teste,
   supervisores e recarga de empilhadeiras.
+- **Docas**: Doca 1 (parede oeste) e Doca 2 (canto nordeste), cercadas com tela e com porta de enrolar.
 - **Escritórios**: recepção e descanso, sala de reunião, escada, vestiários, WC PNE e refeitório.
 - **Empilhadeiras ilustrativas** circulando nos corredores entre fileiras, separadas do caminho seguro.
+
+O acabamento visual segue fotos da operação: piso de concreto, paredes de concreto pré-moldado com
+venezianas no alto (visíveis com "Paredes em altura real"), fita amarela demarcando áreas e paletes, paletes
+plásticos azuis, mesas de tampo preto com monitores, bancadas de teste numeradas 01–04 com pórticos de
+iluminação, postos numerados com câmera na triagem, TV dos supervisores, climatizador, cadeiras pretas e
+equipe de uniforme azul ou preto.
 
 Interações: girar, aproximar e arrastar com mouse ou toque; vistas prontas (Visão geral, Planta, Armazenagem,
 Escritórios); **Percorrer caminho seguro**, um passeio guiado em terceira pessoa pelo trajeto; camadas liga/desliga;
@@ -104,8 +111,9 @@ Alturas adotadas (não constam na planta e podem ser ajustadas em `Layout.html`)
 - túnel de pedestres: livre até o 4º nível (4,8 m);
 - ocupação dos paletes nas estantes: 78% (ilustrativa).
 
-Duas áreas cercadas não têm identificação na planta (canto nordeste e faixa lateral oeste) e aparecem como
-"Área reservada" e "Área lateral".
+As duas áreas cercadas sem nome na planta são as docas: a faixa lateral oeste é a Doca 1 e o canto nordeste,
+a Doca 2. A posição das portas de enrolar, a do climatizador e a da TV dos supervisores foram estimadas pelas
+fotos.
 
 ## Ajustar o layout
 
@@ -115,6 +123,9 @@ Tudo está em `apps-script/Layout.html`, em **pixels da imagem `docs/planta-refe
 - `racks`: níveis, altura, divisões dos vãos e as 4 fileiras (`positions` é o número mostrado);
 - `zones` e `rooms`: retângulos `[x0, y0, x1, y1]`, com nome e descrição da dica;
 - `path.segments`: polilinhas do caminho seguro; `path.tour` é a ordem do passeio guiado;
-- `furniture`, `floorPallets`, `people`, `forklifts`.
+- `furniture` (`worktable` = tampo preto; `bench` com `num` = bancada de teste numerada; `cooler` = climatizador),
+  `floorPallets` (`load`: `tall` ou `mixed`), `posts` (postos numerados da triagem), `tvs`, `chairs`,
+  `seated` (pessoas sentadas), `people` (em pé), `forklifts`;
+- a porta de enrolar de uma doca é o campo `door` da área (segmento sobre a parede externa).
 
 Para medir um ponto novo, abra a imagem num editor que mostre a posição do cursor em pixels.

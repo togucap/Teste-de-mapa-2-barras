@@ -33,22 +33,28 @@
   // ---------------------------------------------------------------------------
   var PALETTES = {
     light: {
-      slab: 0xf7f7f5, slabSide: 0xd5d9de, grid: 0xc9cfd6, wall: 0xd9d6cf, officeWall: 0xead7a4,
-      partition: 0xb9bec6, enclosure: 0xc3c7cd, column: 0xc4c8ce, upright: 0x2f55d4, beam: 0xe8a317,
-      palletWood: 0xb58b58, desk: 0xfbfbfa, bench: 0xc4ccd6, sofa: 0x9aa6b8, stair: 0xd2d6db,
-      person: 0xf2c230, personHead: 0x2b3440, forklift: 0xf08c00, forkliftDark: 0x2b3440,
-      path: 0x178a4c, pathMark: '#ffffff', room: 0xf3eee5, zoneEdge: 0x7d8794, highlight: 0x2f55d4,
-      loads: [0xcfb893, 0xc4ab84, 0xd8c6a6, 0xbca078, 0xc9b28e],
-      tints: { storage: 0xe2e8f4, danger: 0xf6dada, ship: 0xdbeee2, neutral: 0xe2e4e7, sort: 0xdce6f8, test: 0xf8eacf, office: 0xe5e8ef, receive: 0xeae1f5 }
+      slab: 0xc9c8c3, slabSide: 0xaeaca5, grid: 0xc6c4be, wall: 0xcbc5ba, louver: 0xaba6bb, door: 0x8e949c,
+      fence: 0x2b2f34, officeWall: 0xe7e5e0, partition: 0xb9bec6, column: 0xc1bcb2, upright: 0x2f55d4, beam: 0xe8a317,
+      palletWood: 0xb58b58, palletBlue: 0x2f5cc8, desk: 0xf6f6f4, workTop: 0x24282d, workFrame: 0xc3c6cb,
+      bench: 0xc4ccd6, sofa: 0x9aa6b8, stair: 0xd2d6db, monitor: 0x1b1e23, gantry: 0x1f2226, sign: 0xe8572a,
+      cooler: 0xf3f3f1, tv: 0x16181c, screen: 0xe7e3f4, tape: 0xe8b818,
+      person: 0xf2c230, personHead: 0x2b3440, shirtBlue: 0x2a8fd6, shirtBlack: 0x2a2d33, legs: 0x2b3440,
+      forklift: 0xf08c00, forkliftDark: 0x2b3440,
+      path: 0x178a4c, pathMark: '#ffffff', room: 0xf3f1ec, zoneEdge: 0x7d8794, highlight: 0x2f55d4,
+      loads: [0xc8a878, 0xbf9e6c, 0xd2b58a, 0xb89a6a, 0xcdb084],
+      tints: { storage: 0xdfe5f2, danger: 0xf3d4d4, ship: 0xd6ecde, neutral: 0xe0e2e5, sort: 0xd8e3f7, test: 0xf5e6c8, office: 0xe3e6ee, receive: 0xe7ddf3, dock: 0xcfd3d8 }
     },
     dark: {
-      slab: 0x1f252d, slabSide: 0x2a323c, grid: 0x303844, wall: 0x3a424d, officeWall: 0x8c7442,
-      partition: 0x5a6472, enclosure: 0x4a525e, column: 0x4a525e, upright: 0x5b7cf0, beam: 0xe0a02a,
-      palletWood: 0x8a6a43, desk: 0x444c57, bench: 0x4a5563, sofa: 0x566278, stair: 0x3e4651,
-      person: 0xf2c230, personHead: 0xd9dee5, forklift: 0xf08c00, forkliftDark: 0x151a20,
-      path: 0x2fb86a, pathMark: '#e9fff2', room: 0x29303a, zoneEdge: 0x6b7686, highlight: 0x9db4ff,
-      loads: [0xa89479, 0x9c8869, 0xb5a285, 0x8f7b5e, 0xa18c6f],
-      tints: { storage: 0x202a3a, danger: 0x3b2427, ship: 0x1f3429, neutral: 0x272c33, sort: 0x1f2d44, test: 0x3a3022, office: 0x262c37, receive: 0x2f2742 }
+      slab: 0x2b2d2f, slabSide: 0x1f2123, grid: 0x36393c, wall: 0x4b4841, louver: 0x4d4b5a, door: 0x5b6169,
+      fence: 0x0e1012, officeWall: 0x56544f, partition: 0x5a6472, column: 0x4d4a44, upright: 0x5b7cf0, beam: 0xe0a02a,
+      palletWood: 0x8a6a43, palletBlue: 0x3d68d6, desk: 0x4a4f56, workTop: 0x121417, workFrame: 0x5a5f66,
+      bench: 0x4a5563, sofa: 0x566278, stair: 0x3e4651, monitor: 0x0b0c0e, gantry: 0x0e0f11, sign: 0xe8572a,
+      cooler: 0x8b8d8f, tv: 0x0b0c0e, screen: 0x7b77a3, tape: 0xd6a915,
+      person: 0xf2c230, personHead: 0xd9dee5, shirtBlue: 0x3a9be0, shirtBlack: 0x1b1d21, legs: 0x15181c,
+      forklift: 0xf08c00, forkliftDark: 0x151a20,
+      path: 0x2fb86a, pathMark: '#e9fff2', room: 0x2c3036, zoneEdge: 0x6b7686, highlight: 0x9db4ff,
+      loads: [0x9c8360, 0x917856, 0xa68d68, 0x8a724f, 0x9f8661],
+      tints: { storage: 0x252c3a, danger: 0x3b2427, ship: 0x21362a, neutral: 0x303338, sort: 0x233049, test: 0x3d3324, office: 0x2b303b, receive: 0x322a45, dock: 0x3a3e44 }
     }
   };
   function currentTheme() {
@@ -107,16 +113,78 @@
     MAT[key] = m;
     return m;
   }
-  ['slab', 'slabSide', 'wall', 'officeWall', 'partition', 'enclosure', 'column', 'upright', 'beam',
-   'palletWood', 'desk', 'bench', 'sofa', 'stair', 'person', 'personHead', 'forklift', 'forkliftDark'
+  ['slab', 'slabSide', 'officeWall', 'partition', 'column', 'upright', 'beam', 'palletWood', 'palletBlue',
+   'desk', 'workTop', 'workFrame', 'bench', 'sofa', 'stair', 'monitor', 'gantry', 'sign', 'cooler', 'tv', 'tape',
+   'person', 'personHead', 'shirtBlue', 'shirtBlack', 'legs', 'forklift', 'forkliftDark'
   ].forEach(function (k) { std(k); });
+  MAT.palletBlue.roughness = 0.55;
+  MAT.monitor.roughness = 0.4;
+  MAT.gantry.roughness = 0.5; MAT.gantry.metalness = 0.3;
+  var ledMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  std('screen', { emissive: P.screen, emissiveIntensity: 0.35 });
+
+  // Texturas procedurais em tons de cinza (a cor vem da paleta, então o tema escuro funciona)
+  function canvasTex(w, h, draw, repeat) {
+    var c = document.createElement('canvas'); c.width = w; c.height = h;
+    draw(c.getContext('2d'), w, h);
+    var t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return t;
+  }
+  function speckle(g, w, h, base, spread, n) {
+    g.fillStyle = base; g.fillRect(0, 0, w, h);
+    for (var i = 0; i < n; i++) {
+      var v = Math.floor(255 - rnd() * spread);
+      g.fillStyle = 'rgba(' + v + ',' + v + ',' + v + ',0.35)';
+      g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2);
+    }
+  }
+  // Piso de concreto polido: granulado e juntas de dilatação a cada 6 m
+  var floorTex = canvasTex(512, 512, function (g, w, h) {
+    speckle(g, w, h, '#f4f4f4', 40, 9000);
+    g.fillStyle = 'rgba(0,0,0,0.10)';
+    g.fillRect(0, 0, w, 2); g.fillRect(0, 0, 2, h);
+  });
+  floorTex.repeat.set(W / 6, D / 6);
+  MAT.slab.map = floorTex;
+  // Painéis de concreto pré-moldado: juntas horizontais e verticais
+  var concreteTex = canvasTex(256, 256, function (g, w, h) {
+    speckle(g, w, h, '#f2f2f2', 55, 2500);
+    g.fillStyle = 'rgba(0,0,0,0.16)';
+    g.fillRect(0, h - 3, w, 3); g.fillRect(0, 0, 2, h);
+  });
+  // Venezianas de ventilação no alto das paredes
+  var louverTex = canvasTex(64, 64, function (g, w, h) {
+    g.fillStyle = '#f5f5f7'; g.fillRect(0, 0, w, h);
+    g.fillStyle = 'rgba(0,0,0,0.28)'; g.fillRect(0, h - 10, w, 10);
+    g.fillStyle = 'rgba(0,0,0,0.5)'; g.fillRect(0, 0, 2, h);
+  });
+  // Porta de enrolar das docas
+  var doorTex = canvasTex(64, 64, function (g, w, h) {
+    g.fillStyle = '#f0f0f0'; g.fillRect(0, 0, w, h);
+    g.fillStyle = 'rgba(0,0,0,0.22)'; g.fillRect(0, h - 5, w, 5);
+  });
+  // Tela da cerca das docas (transparente entre os fios)
+  var meshTex = canvasTex(64, 64, function (g, w, h) {
+    g.clearRect(0, 0, w, h);
+    g.fillStyle = '#ffffff';
+    g.fillRect(0, 0, w, 6); g.fillRect(0, 0, 6, h);
+  });
+  var tracked = []; // materiais clonados por parede: recoloridos junto com o tema
+  function trackedMat(key, map, extra) {
+    var m = new THREE.MeshStandardMaterial(Object.assign({ color: P[key], roughness: 0.95, map: map }, extra || {}));
+    m.userData.key = key;
+    tracked.push(m);
+    return m;
+  }
   MAT.upright.roughness = 0.6; MAT.upright.metalness = 0.15;
   MAT.beam.roughness = 0.6; MAT.beam.metalness = 0.1;
   std('room', { polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
   var loadMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.95 });
   var tintMats = {};
   Object.keys(P.tints).forEach(function (k) {
-    tintMats[k] = new THREE.MeshStandardMaterial({ color: P.tints[k], roughness: 1, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
+    tintMats[k] = new THREE.MeshStandardMaterial({ color: P.tints[k], roughness: 1, transparent: true, opacity: 0.55, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
   });
   var zoneEdgeMat = new THREE.LineDashedMaterial({ color: P.zoneEdge, dashSize: 0.5, gapSize: 0.35, transparent: true, opacity: 0.8 });
   var gridMat = new THREE.LineBasicMaterial({ color: P.grid });
@@ -199,7 +267,7 @@
   // ---------------------------------------------------------------------------
   // Paredes e pilares
   // ---------------------------------------------------------------------------
-  var tallables = [];
+  var tallables = [], louvers = [], tapes = [];
   function wall(seg, thick, h, mat, group) {
     var x1 = X(seg[0]), z1 = Z(seg[1]), x2 = X(seg[2]), z2 = Z(seg[3]);
     var len = Math.hypot(x2 - x1, z2 - z1);
@@ -211,10 +279,21 @@
     group.add(m);
     return m;
   }
+  function segLen(s) { return Math.hypot(s[2] - s[0], s[3] - s[1]) / S; }
   L.walls.perimeter.forEach(function (s) {
-    var m = wall(s, 0.25, HT.cutWall, MAT.wall, G.structure);
-    m.userData.full = HT.warehouseWall;
+    var len = segLen(s);
+    var tex = concreteTex.clone();
+    tex.repeat.set(len / 5, HT.cutWall / 2.2);
+    var m = wall(s, 0.25, HT.cutWall, trackedMat('wall', tex), G.structure);
+    m.userData.full = HT.louverBase;
+    m.userData.tex = tex;
     tallables.push(m);
+    var lt = louverTex.clone();
+    lt.repeat.set(len / 1.2, (HT.warehouseWall - HT.louverBase) / 0.32);
+    var lv = wall(s, 0.18, HT.warehouseWall - HT.louverBase, trackedMat('louver', lt), G.structure);
+    lv.position.y = HT.louverBase;
+    lv.visible = false;
+    louvers.push(lv);
   });
   L.columns.forEach(function (c) {
     var m = box(MAT.column, X(c[0]) - 0.22, Z(c[1]) - 0.22, X(c[0]) + 0.22, Z(c[1]) + 0.22, 0, HT.cutWall + 0.05, G.structure);
@@ -223,13 +302,52 @@
   });
   L.walls.office.forEach(function (s) { wall(s, 0.16, HT.officeWall, MAT.officeWall, G.offices); });
   L.walls.partition.forEach(function (s) { wall(s, 0.08, HT.partition, MAT.partition, G.offices); });
-  L.walls.enclosure.forEach(function (s) { wall(s, 0.1, HT.enclosure, MAT.enclosure, G.structure); });
+  // Cercas de tela das docas: postes, travessa superior e tela
+  var fenceMeshMat = trackedMat('fence', meshTex, { transparent: true, alphaTest: 0.4, side: THREE.DoubleSide, roughness: 0.6 });
+  L.walls.fence.forEach(function (s) {
+    var len = segLen(s);
+    var tex = meshTex.clone();
+    tex.repeat.set(len / 0.12, HT.fence / 0.12);
+    var mm = fenceMeshMat.clone(); mm.map = tex; mm.userData.key = 'fence'; tracked.push(mm);
+    var x1 = X(s[0]), z1 = Z(s[1]), x2 = X(s[2]), z2 = Z(s[3]);
+    var panel = new THREE.Mesh(new THREE.PlaneGeometry(len, HT.fence), mm);
+    panel.position.set((x1 + x2) / 2, HT.fence / 2, (z1 + z2) / 2);
+    panel.rotation.y = Math.atan2(-(z2 - z1), x2 - x1);
+    G.structure.add(panel);
+    var n = Math.max(1, Math.round(len / 2));
+    for (var i = 0; i <= n; i++) {
+      var t = i / n, px = x1 + (x2 - x1) * t, pz = z1 + (z2 - z1) * t;
+      box(MAT.gantry, px - 0.04, pz - 0.04, px + 0.04, pz + 0.04, 0, HT.fence + 0.05, G.structure);
+    }
+    var rail = wall(s, 0.06, 0.06, MAT.gantry, G.structure);
+    rail.position.y = HT.fence;
+  });
 
   // ---------------------------------------------------------------------------
   // Áreas operacionais e salas
   // ---------------------------------------------------------------------------
   var labelDefs = [];
   function rectCenter(r) { return new THREE.Vector3(X((r[0] + r[2]) / 2), 0, Z((r[1] + r[3]) / 2)); }
+
+  // Fita amarela de demarcação no piso (como na operação)
+  var tapeGroups = [];
+  function tapeRect(x0, z0, x1, z1, w, group) {
+    var y = 0.014, list = [];
+    list.push([x0, z0 - w / 2, x1, z0 + w / 2], [x0, z1 - w / 2, x1, z1 + w / 2],
+              [x0 - w / 2, z0, x0 + w / 2, z1], [x1 - w / 2, z0, x1 + w / 2, z1]);
+    list.forEach(function (r) { tapes.push({ r: r, group: group, y: y }); });
+  }
+  var doorMats = [];
+  function dockDoor(seg) {
+    var len = segLen(seg);
+    var tex = doorTex.clone();
+    tex.repeat.set(1, HT.dockDoor / 0.12);
+    var m = wall(seg, 0.34, HT.cutWall + 0.02, trackedMat('door', tex, { roughness: 0.5, metalness: 0.2 }), G.structure);
+    m.scale.x = len;
+    m.userData.full = HT.dockDoor;
+    m.castShadow = false;
+    tallables.push(m);
+  }
 
   L.zones.forEach(function (z) {
     var r = z.rect, x0 = X(r[0]), z0 = Z(r[1]), x1 = X(r[2]), z1 = Z(r[3]);
@@ -238,13 +356,17 @@
     m.position.set((x0 + x1) / 2, 0.008, (z0 + z1) / 2);
     m.receiveShadow = true;
     G.zones.add(m);
-    var g = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(x0, 0.012, z0), new THREE.Vector3(x1, 0.012, z0),
-      new THREE.Vector3(x1, 0.012, z1), new THREE.Vector3(x0, 0.012, z1), new THREE.Vector3(x0, 0.012, z0)
-    ]);
-    var line = new THREE.Line(g, zoneEdgeMat);
-    line.computeLineDistances();
-    G.zones.add(line);
+    if (z.tint !== 'storage') tapeRect(x0, z0, x1, z1, 0.07, G.zones);
+    else {
+      var g = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(x0, 0.012, z0), new THREE.Vector3(x1, 0.012, z0),
+        new THREE.Vector3(x1, 0.012, z1), new THREE.Vector3(x0, 0.012, z1), new THREE.Vector3(x0, 0.012, z0)
+      ]);
+      var line = new THREE.Line(g, zoneEdgeMat);
+      line.computeLineDistances();
+      G.zones.add(line);
+    }
+    if (z.door) dockDoor(z.door);
     makePickable(m, z.name, z.info);
     if (z.label !== false) labelDefs.push({ text: z.name, pos: rectCenter(r).setY(0.3), cls: '', group: G.zones });
   });
@@ -329,12 +451,23 @@
       }
     }
     rects.forEach(function (rc) {
-      palletSlots.push({ x: X((rc[0] + rc[2]) / 2), z: Z((rc[1] + rc[3]) / 2), y: 0, w: (rc[2] - rc[0]) / S, d: (rc[3] - rc[1]) / S, h: 0.7 + rnd() * 0.6 });
+      var x0 = X(rc[0]), z0 = Z(rc[1]), x1 = X(rc[2]), z1 = Z(rc[3]);
+      var slot = { x: (x0 + x1) / 2, z: (z0 + z1) / 2, y: 0, w: x1 - x0, d: z1 - z0, floor: true };
+      if (fp.load === 'tall') { slot.h = 0.85; slot.lw = 0.62; slot.ld = 0.95; }
+      else { slot.h = 0.45 + rnd() * 0.75; slot.lw = 0.8 + rnd() * 0.16; slot.ld = 0.75 + rnd() * 0.19; }
+      palletSlots.push(slot);
+      tapeRect(x0 - 0.08, z0 - 0.08, x1 + 0.08, z1 + 0.08, 0.05, G.pallets);
     });
   });
   palletSlots.forEach(function (p) { p.c = Math.floor(rnd() * P.loads.length); });
-  instanced(MAT.palletWood, palletSlots, function (p, pp, s) { pp.set(p.x, p.y, p.z); s.set(p.w, 0.14, p.d); }, G.pallets);
-  var loadsMesh = instanced(loadMat, palletSlots, function (p, pp, s) { pp.set(p.x, p.y + 0.14, p.z); s.set(p.w * 0.96, p.h, p.d * 0.94); }, G.pallets);
+  var rackSlots = palletSlots.filter(function (p) { return !p.floor; });
+  var floorSlots = palletSlots.filter(function (p) { return p.floor; });
+  instanced(MAT.palletWood, rackSlots, function (p, pp, s) { pp.set(p.x, p.y, p.z); s.set(p.w, 0.14, p.d); }, G.pallets);
+  instanced(MAT.palletBlue, floorSlots, function (p, pp, s) { pp.set(p.x, 0, p.z); s.set(p.w, 0.15, p.d); }, G.pallets);
+  var loadsMesh = instanced(loadMat, palletSlots, function (p, pp, s) {
+    pp.set(p.x, p.y + 0.14, p.z);
+    s.set(p.w * (p.lw || 0.96), p.h, p.d * (p.ld || 0.94));
+  }, G.pallets);
   function colorLoads() {
     var col = new THREE.Color();
     palletSlots.forEach(function (p, i) { col.setHex(P.loads[p.c]); loadsMesh.setColorAt(i, col); });
@@ -346,9 +479,70 @@
   // Mobiliário
   // ---------------------------------------------------------------------------
   var FURN = {
-    desk: { mat: 'desk', h: 0.75 }, table: { mat: 'desk', h: 0.75 }, bench: { mat: 'bench', h: 0.9 },
+    desk: { mat: 'desk', h: 0.75 }, table: { mat: 'desk', h: 0.75 },
     counter: { mat: 'bench', h: 0.9 }, cabinet: { mat: 'bench', h: 1.8 }, sofa: { mat: 'sofa', h: 0.5 }
   };
+  var monitors = [], signTexCache = {};
+  var monQ = new THREE.Quaternion(), yAxis = new THREE.Vector3(0, 1, 0);
+  function numberTex(text, bg, fg) {
+    var key = text + bg;
+    if (!signTexCache[key]) signTexCache[key] = canvasTex(128, 192, function (g, w, h) {
+      g.fillStyle = bg; g.fillRect(0, 0, w, h);
+      g.fillStyle = fg; g.font = '600 110px "Barlow Condensed", "Arial Narrow", sans-serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(text, w / 2, h / 2 + 6);
+    });
+    return signTexCache[key];
+  }
+  // Monitores distribuídos ao longo do comprimento da mesa, virados para o lado de quem senta
+  function addMonitors(x0, z0, x1, z1, top, n, side) {
+    var alongX = Math.abs(x1 - x0) >= Math.abs(z1 - z0);
+    var len = alongX ? Math.abs(x1 - x0) : Math.abs(z1 - z0);
+    if (n === undefined) n = Math.floor(len / 1.3);
+    for (var i = 0; i < n; i++) {
+      var t = (i + 0.5) / n;
+      var cx = alongX ? x0 + (x1 - x0) * t : (x0 + x1) / 2 + (side || 0);
+      var cz = alongX ? (z0 + z1) / 2 + (side || 0) : z0 + (z1 - z0) * t;
+      monitors.push({ x: cx, z: cz, y: top, rot: alongX ? 0 : Math.PI / 2 });
+    }
+  }
+  function worktable(r, group) {
+    var x0 = X(r[0]), z0 = Z(r[1]), x1 = X(r[2]), z1 = Z(r[3]);
+    box(MAT.workFrame, x0 + 0.05, z0 + 0.05, x1 - 0.05, z1 - 0.05, 0, 0.72, group);
+    box(MAT.workTop, x0, z0, x1, z1, 0.72, 0.04, group);
+    return [x0, z0, x1, z1];
+  }
+  // Bancada de teste dupla: gabinete branco, tampo preto, divisória numerada e pórtico com luminárias
+  function testBench(f) {
+    var r = f.rect, x0 = X(r[0]), z0 = Z(r[1]), x1 = X(r[2]), z1 = Z(r[3]), xm = (x0 + x1) / 2;
+    box(MAT.desk, x0 + 0.05, z0 + 0.05, x1 - 0.05, z1 - 0.05, 0, 0.72, G.furniture);
+    box(MAT.workTop, x0, z0, x1, z1, 0.72, 0.04, G.furniture);
+    box(MAT.desk, xm - 0.03, z0, xm + 0.03, z1, 0.76, 0.62, G.furniture);
+    addMonitors(xm - 0.35, z0, xm - 0.35, z1, 0.76, 2);
+    addMonitors(xm + 0.35, z0, xm + 0.35, z1, 0.76, 2);
+    if (f.num) {
+      var tag = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.36), new THREE.MeshBasicMaterial({ map: numberTex(f.num, '#ffffff', '#1b1e23') }));
+      tag.position.set(xm + 0.035, 1.12, (z0 + z1) / 2);
+      tag.rotation.y = Math.PI / 2;
+      G.furniture.add(tag);
+    }
+    var gz0 = z0 - 0.15, gz1 = z1 + 0.15, H = 2.7;
+    box(MAT.gantry, xm - 0.03, gz0 - 0.03, xm + 0.03, gz0 + 0.03, 0, H, G.furniture);
+    box(MAT.gantry, xm - 0.03, gz1 - 0.03, xm + 0.03, gz1 + 0.03, 0, H, G.furniture);
+    box(MAT.gantry, xm - 0.03, gz0 - 0.03, xm + 0.03, gz1 + 0.03, H, 0.06, G.furniture);
+    [-0.45, 0.45].forEach(function (dx) {
+      box(MAT.gantry, xm - 0.03, (z0 + z1) / 2 - 0.02, xm + dx, (z0 + z1) / 2 + 0.02, H - 0.02, 0.04, G.furniture);
+      var led = box(ledMat, xm + dx - 0.03, z0 + 0.2, xm + dx + 0.03, z1 - 0.2, H - 0.06, 0.03, G.furniture);
+      led.castShadow = false;
+    });
+  }
+  // Climatizador evaporativo (caixa branca com duto superior)
+  function cooler(r) {
+    var x0 = X(r[0]), z0 = Z(r[1]), x1 = X(r[2]), z1 = Z(r[3]);
+    box(MAT.cooler, x0, z0, x1, z1, 0, 1.5, G.furniture);
+    box(MAT.cooler, x0 + 0.15, z0 + 0.1, x1 - 0.15, z1 - 0.1, 1.5, 0.7, G.furniture);
+  }
+
   L.furniture.forEach(function (f) {
     if (f.type === 'stair') {
       var r = f.rect, steps = 12, x0 = X(r[0]), x1 = X(r[2]), zN = Z(r[1]), zS = Z(r[3]);
@@ -358,26 +552,132 @@
       }
       return;
     }
+    if (f.type === 'bench') { testBench(f); return; }
+    if (f.type === 'cooler') { cooler(f.rect); return; }
+    if (f.type === 'worktable') {
+      var wr = worktable(f.rect, G.furniture);
+      addMonitors(wr[0], wr[1], wr[2], wr[3], 0.76, f.monitors);
+      return;
+    }
+    if (f.type === 'desk' || f.type === 'table') {
+      // Mesa: tampo e painéis laterais (vão livre embaixo, como nas fotos)
+      var dx0 = X(f.rect[0]), dz0 = Z(f.rect[1]), dx1 = X(f.rect[2]), dz1 = Z(f.rect[3]);
+      var alongX = (dx1 - dx0) >= (dz1 - dz0);
+      box(MAT.desk, dx0, dz0, dx1, dz1, 0.71, 0.04, G.furniture);
+      if (alongX) {
+        box(MAT.desk, dx0, dz0, dx0 + 0.04, dz1, 0, 0.71, G.furniture);
+        box(MAT.desk, dx1 - 0.04, dz0, dx1, dz1, 0, 0.71, G.furniture);
+      } else {
+        box(MAT.desk, dx0, dz0, dx1, dz0 + 0.04, 0, 0.71, G.furniture);
+        box(MAT.desk, dx0, dz1 - 0.04, dx1, dz1, 0, 0.71, G.furniture);
+      }
+      if (f.divider) {
+        if (alongX) box(MAT.bench, dx0, (dz0 + dz1) / 2 - 0.02, dx1, (dz0 + dz1) / 2 + 0.02, 0.75, 0.3, G.furniture);
+        else box(MAT.bench, (dx0 + dx1) / 2 - 0.02, dz0, (dx0 + dx1) / 2 + 0.02, dz1, 0.75, 0.3, G.furniture);
+        [-0.3, 0.3].forEach(function (off) { addMonitors(dx0, dz0, dx1, dz1, 0.75, Math.ceil((f.monitors || 2) / 2), off); });
+      } else if (f.type === 'desk') addMonitors(dx0, dz0, dx1, dz1, 0.75, f.monitors);
+      return;
+    }
     var spec = FURN[f.type] || FURN.desk;
     boxPx(MAT[spec.mat], f.rect, 0, spec.h, G.furniture);
+  });
+
+  // Cadeiras pretas viradas para a mesa mais próxima
+  var deskCenters = L.furniture.filter(function (f) { return /desk|table|worktable|bench|counter/.test(f.type); }).map(function (f) {
+    return { r: f.rect };
+  });
+  function faceNearest(u, v) {
+    var best = null, bd = Infinity;
+    deskCenters.forEach(function (d) {
+      var r = d.r, cu = Math.max(r[0], Math.min(u, r[2])), cv = Math.max(r[1], Math.min(v, r[3]));
+      var dd = Math.hypot(cu - u, cv - v);
+      if (dd < bd) { bd = dd; best = [cu, cv]; }
+    });
+    if (!best || bd < 1) return 0;
+    return Math.atan2(-(Z(best[1]) - Z(v)), X(best[0]) - X(u));
+  }
+  var chairs = (L.chairs || []).map(function (c) { return { x: X(c[0]), z: Z(c[1]), rot: faceNearest(c[0], c[1]) }; });
+  if (chairs.length) {
+    instancedRot(MAT.monitor, chairs, function (c, p, s) { p.set(c.x, 0.42, c.z); s.set(0.48, 0.08, 0.48); }, G.furniture);
+    instancedRot(MAT.monitor, chairs.map(function (c) {
+      return { x: c.x - Math.cos(c.rot) * 0.24, z: c.z + Math.sin(c.rot) * 0.24, rot: c.rot + Math.PI / 2 };
+    }), function (c, p, s) { p.set(c.x, 0.5, c.z); s.set(0.46, 0.6, 0.07); }, G.furniture);
+    instancedRot(MAT.gantry, chairs, function (c, p, s) { p.set(c.x, 0, c.z); s.set(0.06, 0.42, 0.06); }, G.furniture);
+  }
+
+  // Monitores (instanciados): base + tela
+  function instancedRot(mat, list, fn, group) {
+    var im = new THREE.InstancedMesh(boxGeo, mat, list.length);
+    list.forEach(function (it, i) { fn(it, vPos, vScl); monQ.setFromAxisAngle(yAxis, it.rot); mtx.compose(vPos, monQ, vScl); im.setMatrixAt(i, mtx); });
+    im.castShadow = true; im.receiveShadow = true;
+    group.add(im);
+    return im;
+  }
+  if (monitors.length) {
+    instancedRot(MAT.monitor, monitors, function (m, p, s) { p.set(m.x, m.y, m.z); s.set(0.2, 0.18, 0.16); }, G.furniture);
+    instancedRot(MAT.monitor, monitors, function (m, p, s) { p.set(m.x, m.y + 0.16, m.z); s.set(0.58, 0.36, 0.035); }, G.furniture);
+  }
+
+  // Postos numerados da triagem: poste preto, placa laranja com número e câmera no topo
+  (L.posts || []).forEach(function (pt) {
+    var x = X(pt[0]), z = Z(pt[1]);
+    box(MAT.gantry, x - 0.04, z - 0.04, x + 0.04, z + 0.04, 0, 3.3, G.furniture);
+    var sign = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.44, 0.03), [MAT.sign, MAT.sign, MAT.sign, MAT.sign,
+      new THREE.MeshBasicMaterial({ map: numberTex(String(pt[2]), '#e8572a', '#ffffff') }), MAT.sign]);
+    sign.position.set(x, 2.55, z + 0.06);
+    G.furniture.add(sign);
+    var cam = box(MAT.cooler, x - 0.08, z - 0.06, x + 0.08, z + 0.1, 3.3, 0.1, G.furniture);
+    cam.castShadow = false;
+  });
+
+  // TV de acompanhamento na parede
+  (L.tvs || []).forEach(function (tv) {
+    var x = X(tv.p[0]), z = Z(tv.p[1]), w = tv.w;
+    box(MAT.tv, x, z - w / 2, x + 0.05, z + w / 2, 1.6, w * 0.57, G.furniture);
+    box(MAT.screen, x + 0.05, z - w / 2 + 0.03, x + 0.055, z + w / 2 - 0.03, 1.63, w * 0.57 - 0.06, G.furniture);
+  });
+
+  // Fitas amarelas (instanciadas por camada)
+  [G.zones, G.pallets].forEach(function (grp) {
+    var list = tapes.filter(function (t) { return t.group === grp; });
+    if (!list.length) return;
+    var im = instanced(MAT.tape, list, function (t, p, s) {
+      p.set((t.r[0] + t.r[2]) / 2, t.y, (t.r[1] + t.r[3]) / 2);
+      s.set(Math.abs(t.r[2] - t.r[0]), 0.004, Math.abs(t.r[3] - t.r[1]));
+    }, grp);
+    im.castShadow = false;
   });
 
   // ---------------------------------------------------------------------------
   // Pessoas e empilhadeiras
   // ---------------------------------------------------------------------------
-  var bodyGeo = new THREE.CylinderGeometry(0.2, 0.22, 1.15, 16); bodyGeo.translate(0, 0.575, 0);
-  var headGeo = new THREE.SphereGeometry(0.14, 16, 12); headGeo.translate(0, 1.36, 0);
-  function person(group) {
+  var legsGeo = new THREE.CylinderGeometry(0.17, 0.19, 0.78, 14); legsGeo.translate(0, 0.39, 0);
+  var torsoGeo = new THREE.CylinderGeometry(0.2, 0.18, 0.55, 14); torsoGeo.translate(0, 1.05, 0);
+  var headGeo = new THREE.SphereGeometry(0.13, 16, 12); headGeo.translate(0, 1.47, 0);
+  function person(group, shirt) {
     var g = new THREE.Group();
-    var b = new THREE.Mesh(bodyGeo, MAT.person), h = new THREE.Mesh(headGeo, MAT.personHead);
-    b.castShadow = h.castShadow = true;
-    g.add(b, h);
+    [new THREE.Mesh(legsGeo, MAT.legs), new THREE.Mesh(torsoGeo, shirt), new THREE.Mesh(headGeo, MAT.personHead)].forEach(function (m) {
+      m.castShadow = true; g.add(m);
+    });
     group.add(g);
     return g;
   }
-  L.people.forEach(function (p) {
-    var g = person(G.actors);
+  L.people.forEach(function (p, i) {
+    var g = person(G.actors, i % 3 === 2 ? MAT.shirtBlack : MAT.shirtBlue);
     g.position.set(X(p[0]), 0, Z(p[1]));
+  });
+  // Pessoas sentadas nas estações (bancadas, supervisores, Neia, recebimento)
+  var thighGeo = new THREE.BoxGeometry(0.42, 0.14, 0.34); thighGeo.translate(0.2, 0.52, 0);
+  var shinGeo = new THREE.BoxGeometry(0.12, 0.45, 0.3); shinGeo.translate(0.38, 0.23, 0);
+  (L.seated || []).forEach(function (p, i) {
+    var g = new THREE.Group();
+    var torso = new THREE.Mesh(torsoGeo, i % 3 === 1 ? MAT.shirtBlack : MAT.shirtBlue);
+    var head = new THREE.Mesh(headGeo, MAT.personHead);
+    torso.position.y = -0.3; head.position.y = -0.3;
+    [torso, head, new THREE.Mesh(thighGeo, MAT.legs), new THREE.Mesh(shinGeo, MAT.legs)].forEach(function (m) { m.castShadow = true; g.add(m); });
+    g.position.set(X(p[0]), 0, Z(p[1]));
+    g.rotation.y = faceNearest(p[0], p[1]);
+    G.actors.add(g);
   });
 
   function forklift() {
@@ -457,7 +757,7 @@
     return i - 1;
   }
 
-  var walker = person(G.path);
+  var walker = person(G.path, MAT.person);
   var ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 });
   var ring = new THREE.Mesh(new THREE.RingGeometry(0.34, 0.44, 32).rotateX(-Math.PI / 2), ringMat);
   ring.position.y = 0.03;
@@ -482,7 +782,11 @@
   var state = { labels: true, tallWalls: false, tour: false };
 
   function setTall(on) {
-    tallables.forEach(function (m) { m.scale.y = on ? m.userData.full : (m.userData.cut || (m.userData.cut = m.scale.y)); });
+    tallables.forEach(function (m) {
+      m.scale.y = on ? m.userData.full : m.userData.cut;
+      if (m.userData.tex) m.userData.tex.repeat.y = m.scale.y / 2.2;
+    });
+    louvers.forEach(function (m) { m.visible = on; });
   }
   tallables.forEach(function (m) { m.userData.cut = m.scale.y; });
 
@@ -509,6 +813,8 @@
   function applyTheme() {
     P = PALETTES[currentTheme()];
     Object.keys(MAT).forEach(function (k) { MAT[k].color.setHex(P[k]); });
+    MAT.screen.emissive.setHex(P.screen);
+    tracked.forEach(function (m) { m.color.setHex(P[m.userData.key]); });
     Object.keys(tintMats).forEach(function (k) { tintMats[k].color.setHex(P.tints[k]); });
     zoneEdgeMat.color.setHex(P.zoneEdge);
     gridMat.color.setHex(P.grid);
@@ -589,9 +895,17 @@
     if (!obj) return;
     tmpBox.setFromObject(obj);
     tmpBox.getSize(tmpV); tmpBox.getCenter(tmpC);
-    var dist = Math.max(tmpV.x, tmpV.z, 5) * 1.25 + 4;
+    var dist = Math.max(tmpV.x, tmpV.z, 5) * 1.1 + 3;
     var dir = new THREE.Vector3().subVectors(camera.position, controls.target).normalize();
     if (dir.y < 0.45) { dir.y = 0.45; dir.normalize(); }
+    if (dir.y > 0.85) dir.set(0.4, 0.72, 0.56).normalize(); // vindo da vista de cima: inclina para ver em 3D
+    // Áreas junto às paredes: a câmera fica do lado de dentro do galpão, olhando para a parede
+    var inward = new THREE.Vector2(-tmpC.x, -tmpC.z);
+    if (inward.length() > 8) {
+      inward.normalize();
+      var hz = Math.hypot(dir.x, dir.z);
+      dir.set(inward.x * hz, dir.y, inward.y * hz).normalize();
+    }
     var target = new THREE.Vector3(tmpC.x, Math.min(tmpC.y, 1.5), tmpC.z);
     flyTo(target.clone().addScaledVector(dir, dist), target);
     setPressed(null);
@@ -605,7 +919,7 @@
   function flyTo(pos, target, dur) {
     dur = reduceMotion ? 0 : (dur === undefined ? 1.1 : dur);
     if (dur === 0) { camera.position.copy(pos); controls.target.copy(target); controls.update(); fly = null; return; }
-    fly = { p0: camera.position.clone(), t0: controls.target.clone(), p1: pos, t1: target, k: 0, dur: dur };
+    fly = { p0: camera.position.clone(), t0: controls.target.clone(), p1: pos, t1: target, start: performance.now(), dur: dur };
   }
   function topDistance() {
     var vf = THREE.MathUtils.degToRad(camera.fov);
@@ -755,11 +1069,11 @@
       hudMeta.textContent = fmt(Math.min(done, tourLen)) + ' de ' + fmt(tourLen) + ' m';
       if (done >= tourLen) stopTour(false);
     } else if (fly) {
-      fly.k = Math.min(1, fly.k + dt / fly.dur);
-      var e = ease(fly.k);
+      var fk = Math.min(1, (performance.now() - fly.start) / 1000 / fly.dur);
+      var e = ease(fk);
       camera.position.lerpVectors(fly.p0, fly.p1, e);
       controls.target.lerpVectors(fly.t0, fly.t1, e);
-      if (fly.k >= 1) fly = null;
+      if (fk >= 1) fly = null;
       controls.update();
     } else {
       controls.update();
