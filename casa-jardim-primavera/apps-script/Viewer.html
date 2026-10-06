@@ -1,0 +1,439 @@
+<script>
+/* Visualizador 3D da casa. O modelo (GLB exportado do Blender, compactado em gzip + base64) vem de Modelo.html. */
+(function () {
+  'use strict';
+
+  var statusEl = document.getElementById('status');
+  function fail(msg) { statusEl.textContent = msg; statusEl.hidden = false; }
+
+  if (!window.THREE || !THREE.GLTFLoader || !THREE.OrbitControls) {
+    fail('Não foi possível carregar o Three.js. Verifique a conexão com a internet e recarregue a página.');
+    return;
+  }
+  if (!window.CASA_GLB) { fail('Modelo 3D não encontrado (arquivo Modelo.html).'); return; }
+
+  var CUT_HEIGHT = 1.62;          // altura do corte das paredes (m)
+  var GROUPS_NO_CUT = { Externo: 1, Vizinho: 1, Teto: 1, Telhado: 1, Rotulos: 1, Luzes: 1, CorteParedes: 1 };
+
+  // Blender (X, Y, Z-para-cima) -> three.js (X, Y-para-cima, -Y)
+  function b2t(p) { return new THREE.Vector3(p[0], p[2], -p[1]); }
+
+  /* ---------- Renderizador e cena ---------- */
+  var canvas = document.getElementById('scene');
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.physicallyCorrectLights = true;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.autoUpdate = false;
+  renderer.localClippingEnabled = true;
+
+  var scene = new THREE.Scene();
+  var pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
+
+  var camera = new THREE.PerspectiveCamera(40, 1, 0.05, 400);
+  var controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.maxPolarAngle = Math.PI * 0.495;
+  controls.minDistance = 0.3;
+  controls.maxDistance = 45;
+  controls.screenSpacePanning = true;
+
+  var hemi = new THREE.HemisphereLight(0xfff4e8, 0xb8a48c, 1.0);
+  var ambient = new THREE.AmbientLight(0xfff1e2, 0.0);   // reforço para as vistas internas (com teto)
+  scene.add(hemi, ambient);
+  var sun = new THREE.DirectionalLight(0xfff0dc, 3.0);
+  sun.position.set(-7, 12, 9).multiplyScalar(1.4);
+  sun.target.position.set(3.1, 0, -4.9);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  var sc = sun.shadow.camera;
+  sc.left = -11; sc.right = 11; sc.top = 11; sc.bottom = -11; sc.near = 1; sc.far = 50;
+  sun.shadow.bias = -0.0004;
+  sun.shadow.normalBias = 0.02;
+  scene.add(sun, sun.target);
+
+  var cutPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), CUT_HEIGHT);
+
+  /* ---------- Estado ---------- */
+  var state = { corte: true, moveis: true, teto: false, telhado: false, rotulos: true, vizinho: true,
+    luz: 'dia', portaAberta: false };
+  var groups = {};
+  var meta = null;
+  var labels = [];
+  var pointLights = [];
+  var emissives = [];
+  var envMats = [];
+  var door = null, doorBaseX = 0, doorTravel = 0.9, doorT = 0;
+  var dirty = true;
+  var tween = null;
+  var tour = null;
+
+  function markDirty() { dirty = true; }
+
+  /* ---------- Carregar o modelo ---------- */
+  function decodeModel() {
+    var b64 = Array.isArray(window.CASA_GLB) ? window.CASA_GLB.join('') : window.CASA_GLB;
+    var raw = atob(b64);
+    var bytes = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    if (!('DecompressionStream' in window)) {
+      return Promise.reject(new Error('Este navegador não descompacta o modelo. Use uma versão recente do Chrome, Edge, Firefox ou Safari.'));
+    }
+    var stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return new Response(stream).arrayBuffer();
+  }
+
+  decodeModel().then(function (buf) {
+    new THREE.GLTFLoader().parse(buf, '', onLoad, function (err) { fail('Erro ao ler o modelo 3D: ' + (err && err.message || err)); });
+  }).catch(function (err) { fail(err.message || String(err)); });
+
+  function onLoad(gltf) {
+    var root = gltf.scene;
+    scene.add(root);
+    meta = JSON.parse((root.userData && root.userData.casa) || '{}');
+    var maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+    root.children.forEach(function (g) { groups[g.name] = g; });
+
+    var glass = new THREE.MeshStandardMaterial({ name: 'Vidro', color: 0xcfdedd, roughness: 0.05, metalness: 0.0,
+      transparent: true, opacity: 0.12, depthWrite: false, side: THREE.DoubleSide });
+    glass.userData.env = 0.7;
+
+    root.traverse(function (o) {
+      if (!o.isMesh) return;
+      var m = o.material;
+      var name = m.name || '';
+      o.castShadow = true;
+      o.receiveShadow = true;
+      if (name === 'Vidro') { o.material = glass; o.castShadow = false; m = glass; }
+      if (name === 'Cortina' || name === 'Vidro_Escuro') { m.depthWrite = false; o.castShadow = name !== 'Cortina'; }
+      if (m.map) { m.map.anisotropy = maxAniso; }
+      if (m.emissive && m.emissiveIntensity > 0 && (m.emissive.r + m.emissive.g + m.emissive.b) > 0) {
+        if (m.userData.baseEmissive === undefined) { m.userData.baseEmissive = m.emissiveIntensity; emissives.push(m); }
+        o.castShadow = false;
+      }
+      if (m.userData.env === undefined) m.userData.env = m.metalness > 0.5 ? 1.6 : 0.55;
+      if (envMats.indexOf(m) < 0) envMats.push(m);
+    });
+
+    // Materiais cortados pelo plano de corte (clonados para não afetar o que não deve ser cortado).
+    // Peças fechadas ganham uma "tampa": as faces de trás são desenhadas em cor chapada, como no corte de uma planta.
+    var capWall = new THREE.MeshBasicMaterial({ color: 0x4a3f36, side: THREE.BackSide, clippingPlanes: [cutPlane] });
+    var capFurniture = new THREE.MeshBasicMaterial({ color: 0xa3927f, side: THREE.BackSide, clippingPlanes: [cutPlane] });
+    var THIN = /^(Vidro|Vidro_Escuro|Cortina|Folha_Verde|Folha_Escura|Quadro_Folha|LED|Espelho)$/;
+    Object.keys(groups).forEach(function (gname) {
+      if (GROUPS_NO_CUT[gname]) return;
+      var meshes = [];
+      groups[gname].traverse(function (o) { if (o.isMesh) meshes.push(o); });
+      meshes.forEach(function (o) {
+        var closed = !THIN.test(o.material.name || '');
+        if (closed) {
+          var cap = new THREE.Mesh(o.geometry, gname.indexOf('Mob_') === 0 ? capFurniture : capWall);
+          cap.userData.isCap = true;
+          o.add(cap);
+        }
+        var c = o.material.clone();
+        c.userData = o.material.userData;
+        c.clippingPlanes = [cutPlane];
+        if (closed) c.side = THREE.FrontSide;
+        o.material = c;
+        o.userData.cut = true;
+        if (envMats.indexOf(c) < 0) envMats.push(c);
+        if (c.userData.baseEmissive !== undefined && emissives.indexOf(c) < 0) emissives.push(c);
+      });
+    });
+
+    // Tampa do corte das paredes: plantas das alvenarias na altura do corte
+    if (groups.CorteParedes) {
+      groups.CorteParedes.position.y = CUT_HEIGHT - 0.003;
+      groups.CorteParedes.traverse(function (o) {
+        if (o.isMesh) { o.material = new THREE.MeshBasicMaterial({ color: 0x4a3f36 }); o.castShadow = false; o.receiveShadow = false; }
+      });
+    }
+
+    // Porta de vidro de correr
+    door = root.getObjectByName('PortaVidro_Folha');
+    if (door) { doorBaseX = door.position.x; doorTravel = (door.userData && door.userData.curso) || 0.9; }
+
+    // Luzes noturnas nos pontos marcados no Blender
+    if (groups.Luzes) {
+      groups.Luzes.children.forEach(function (e) {
+        var p = (e.userData && e.userData.potencia) || 1;
+        var l = new THREE.PointLight(0xffc68a, 0, 7.5, 2);
+        l.userData.base = 9 * p;
+        l.position.copy(e.getWorldPosition(new THREE.Vector3()));
+        l.position.y -= 0.15;
+        scene.add(l);
+        pointLights.push(l);
+      });
+    }
+
+    // Rótulos
+    var host = document.getElementById('labels');
+    if (groups.Rotulos) {
+      groups.Rotulos.children.forEach(function (e) {
+        var id = e.name.replace('Rotulo_', '');
+        var el = document.createElement('div');
+        el.className = 'lbl';
+        el.innerHTML = '';
+        el.appendChild(document.createTextNode(e.userData.rotulo || id));
+        var sm = document.createElement('small');
+        sm.textContent = String(e.userData.area).replace('.', ',') + ' m²';
+        el.appendChild(sm);
+        el.addEventListener('click', function () { goToRoom(id, e); });
+        host.appendChild(el);
+        labels.push({ el: el, pos: e.getWorldPosition(new THREE.Vector3()).setY(1.1) });
+      });
+    }
+
+    if (window.matchMedia && window.matchMedia('(max-width: 760px)').matches) {
+      document.getElementById('layers').removeAttribute('open');
+    }
+    fillStamp();
+    buildViewButtons();
+    bindUI();
+    applyState();
+    statusEl.hidden = true;
+    resize();
+    setView(viewById('geral'), true);
+    renderer.shadowMap.needsUpdate = true;
+    markDirty();
+  }
+
+  /* ---------- Interface ---------- */
+  function fmt(n, d) { return Number(n).toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+
+  function fillStamp() {
+    if (!meta) return;
+    document.getElementById('st-util').innerHTML = fmt(meta.areaUtil, 1) + ' <small>m²</small>';
+    document.getElementById('st-const').innerHTML = fmt(meta.areaConstruida, 1) + ' <small>m²</small>';
+    document.getElementById('st-dims').innerHTML = fmt(meta.dimensoes[0], 2) + ' × ' + fmt(meta.dimensoes[1], 2) + ' <small>m</small>';
+    document.getElementById('st-pd').innerHTML = fmt(meta.peDireito, 2) + ' <small>m</small>';
+  }
+
+  function viewById(id) {
+    var vs = (meta && meta.vistas) || [];
+    for (var i = 0; i < vs.length; i++) if (vs[i].id === id) return vs[i];
+    return vs[0];
+  }
+
+  function buildViewButtons() {
+    var nav = document.getElementById('views');
+    var vs = (meta && meta.vistas) || [];
+    vs.forEach(function (v, i) {
+      if (i === 3) { var s = document.createElement('span'); s.className = 'sep'; nav.appendChild(s); }
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = v.nome;
+      b.dataset.view = v.id;
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () { stopTour(); setView(v); });
+      nav.appendChild(b);
+    });
+    var s2 = document.createElement('span'); s2.className = 'sep'; nav.appendChild(s2);
+    var t = document.createElement('button');
+    t.type = 'button'; t.className = 'tour'; t.id = 'tour-btn'; t.textContent = 'Passeio';
+    t.addEventListener('click', function () { if (tour) stopTour(); else startTour(); });
+    nav.appendChild(t);
+  }
+
+  function pressView(id) {
+    document.querySelectorAll('#views button[data-view]').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.view === id ? 'true' : 'false');
+    });
+  }
+
+  function bindUI() {
+    document.querySelectorAll('input[data-opt]').forEach(function (inp) {
+      inp.addEventListener('change', function () { state[inp.dataset.opt] = inp.checked; applyState(); });
+    });
+    document.querySelectorAll('[data-light]').forEach(function (b) {
+      b.addEventListener('click', function () { state.luz = b.dataset.light; applyLight(); });
+    });
+    document.querySelectorAll('[data-door]').forEach(function (b) {
+      b.addEventListener('click', function () { state.portaAberta = !state.portaAberta; syncDoorButtons(); });
+    });
+    controls.addEventListener('start', function () { tween = null; stopTour(); hideHint(); });
+    controls.addEventListener('change', markDirty);
+    window.addEventListener('resize', resize);
+    setTimeout(hideHint, 9000);
+  }
+
+  function hideHint() { var h = document.getElementById('hint'); if (h) h.style.opacity = '0'; }
+
+  function syncDoorButtons() {
+    document.querySelectorAll('[data-door]').forEach(function (b) {
+      b.textContent = state.portaAberta ? 'Fechar porta' : 'Abrir porta';
+    });
+  }
+
+  function syncInputs() {
+    document.querySelectorAll('input[data-opt]').forEach(function (inp) { inp.checked = !!state[inp.dataset.opt]; });
+  }
+
+  function applyState() {
+    function vis(name, on) { if (groups[name]) groups[name].visible = on; }
+    vis('Teto', state.teto);
+    vis('Telhado', state.telhado);
+    vis('Externo', state.vizinho);
+    vis('Vizinho', state.vizinho);
+    vis('CorteParedes', state.corte && !state.teto && !state.telhado);
+    Object.keys(groups).forEach(function (g) { if (g.indexOf('Mob_') === 0) vis(g, state.moveis); });
+    cutPlane.constant = (state.corte && !state.teto && !state.telhado) ? CUT_HEIGHT : 1000;
+    labels.forEach(function (l) { l.el.hidden = !labelsOn(); });
+    syncInputs();
+    applyLight();
+    renderer.shadowMap.needsUpdate = true;
+    markDirty();
+  }
+
+  // Rótulos só na vista em corte (sem teto e sem telhado), para não aparecerem através das paredes
+  function labelsOn() { return state.rotulos && !state.teto && !state.telhado; }
+
+  function applyLight() {
+    var night = state.luz === 'noite';
+    document.querySelectorAll('[data-light]').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.light === state.luz ? 'true' : 'false');
+    });
+    hemi.intensity = night ? 0.06 : 1.0;
+    sun.intensity = night ? 0.0 : 3.0;
+    sun.castShadow = !night;
+    renderer.toneMappingExposure = night ? 1.25 : 0.95;
+    scene.background = new THREE.Color(night ? 0x111318 : 0xdfe6ea);
+    ambient.intensity = state.teto ? (night ? 0.12 : 0.75) : 0.0;
+    envMats.forEach(function (m) { m.envMapIntensity = (m.userData.env || 0.55) * (night ? 0.15 : 1.0); });
+    emissives.forEach(function (m) { m.emissiveIntensity = m.userData.baseEmissive * (night ? 0.6 : 0.06); });
+    pointLights.forEach(function (l) { l.intensity = night ? l.userData.base : 0; });
+    renderer.shadowMap.needsUpdate = true;
+    markDirty();
+  }
+
+  /* ---------- Câmera e vistas ---------- */
+  function fovFor(lens) {
+    var aspect = camera.aspect || 1;
+    var half = 18 / lens;              // sensor de 36 mm do Blender, ajuste pela maior dimensão
+    var v = aspect >= 1 ? Math.atan(half / aspect) : Math.atan(half * (state.teto ? 1 : 0.62));
+    return THREE.MathUtils.radToDeg(2 * v);
+  }
+
+  function setView(v, instant) {
+    if (!v) return;
+    state.corte = !!v.corte;
+    state.teto = !!v.teto;
+    state.telhado = !!v.telhado;
+    applyState();
+    var to = b2t(v.pos), target = b2t(v.alvo), lens = v.lente || 30;
+    // Tela em pé (celular): nas vistas externas afasta a câmera para caber a casa inteira na largura
+    if (camera.aspect < 1 && !v.teto) {
+      var f = Math.min(1 / camera.aspect, 2.2);
+      to = target.clone().add(to.clone().sub(target).multiplyScalar(f));
+    }
+    controls.maxPolarAngle = v.teto ? Math.PI * 0.62 : Math.PI * 0.495;
+    controls.minDistance = v.teto ? 0.05 : 0.3;
+    pressView(v.id);
+    currentLens = lens;
+    if (instant) {
+      camera.position.copy(to); controls.target.copy(target);
+      camera.fov = fovFor(lens); camera.updateProjectionMatrix();
+      controls.update(); markDirty();
+      return;
+    }
+    tween = { start: performance.now(), dur: 1100, p0: camera.position.clone(), p1: to, t0: controls.target.clone(),
+      t1: target, f0: camera.fov, f1: fovFor(lens) };
+  }
+  var currentLens = 30;
+
+  function goToRoom(id, labelObj) {
+    stopTour();
+    var v = viewById(id);
+    if (v && v.id === id) { setView(v); return; }
+    // cômodos sem vista própria: olhar de cima, com corte
+    var p = labelObj.getWorldPosition(new THREE.Vector3());
+    setView({ id: id, corte: true, pos: [p.x + 2.6, -p.z - 3.2, 5.2], alvo: [p.x, -p.z, 0.4], lente: 24 });
+  }
+
+  var TOUR_ORDER = ['fachada', 'sala', 'jantar', 'cozinha', 'dorm2', 'dorm1', 'banho', 'geral'];
+  function startTour() {
+    var i = 0;
+    var btn = document.getElementById('tour-btn');
+    if (btn) btn.textContent = 'Parar passeio';
+    function step() {
+      setView(viewById(TOUR_ORDER[i]));
+      if (TOUR_ORDER[i] === 'sala' && !state.portaAberta) { state.portaAberta = true; syncDoorButtons(); }
+      i++;
+      if (i >= TOUR_ORDER.length) { tour = setTimeout(stopTour, 4200); return; }
+      tour = setTimeout(step, 4200);
+    }
+    step();
+  }
+  function stopTour() {
+    if (tour) { clearTimeout(tour); tour = null; }
+    var btn = document.getElementById('tour-btn');
+    if (btn) btn.textContent = 'Passeio';
+  }
+
+  function resize() {
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.fov = fovFor(currentLens);
+    camera.updateProjectionMatrix();
+    markDirty();
+  }
+
+  /* ---------- Laço de animação ---------- */
+  var clock = new THREE.Clock();
+  var tmp = new THREE.Vector3();
+  function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+  function updateLabels() {
+    if (!labelsOn()) return;
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    labels.forEach(function (l) {
+      tmp.copy(l.pos).project(camera);
+      var visible = tmp.z < 1 && tmp.x > -1.1 && tmp.x < 1.1 && tmp.y > -1.1 && tmp.y < 1.1;
+      l.el.style.display = visible ? '' : 'none';
+      if (visible) {
+        l.el.style.transform = 'translate(-50%, -100%) translate(' + ((tmp.x * 0.5 + 0.5) * w).toFixed(1) + 'px,' +
+          ((-tmp.y * 0.5 + 0.5) * h).toFixed(1) + 'px)';
+      }
+    });
+  }
+
+  function loop() {
+    requestAnimationFrame(loop);
+    var dt = Math.min(clock.getDelta(), 0.25);
+    if (tween) {
+      var tt = Math.min((performance.now() - tween.start) / tween.dur, 1);
+      var k = ease(tt);
+      camera.position.lerpVectors(tween.p0, tween.p1, k);
+      controls.target.lerpVectors(tween.t0, tween.t1, k);
+      camera.fov = tween.f0 + (tween.f1 - tween.f0) * k;
+      camera.updateProjectionMatrix();
+      if (tt >= 1) tween = null;
+      dirty = true;
+    }
+    if (door) {
+      var goal = state.portaAberta ? 1 : 0;
+      if (Math.abs(doorT - goal) > 1e-3) {
+        doorT += Math.sign(goal - doorT) * Math.min(Math.abs(goal - doorT), dt / 1.2);
+        door.position.x = doorBaseX + doorTravel * ease(doorT);
+        renderer.shadowMap.needsUpdate = true;
+        dirty = true;
+      }
+    }
+    if (controls.update()) dirty = true;
+    if (!dirty) return;
+    dirty = false;
+    renderer.render(scene, camera);
+    updateLabels();
+  }
+  loop();
+})();
+</script>

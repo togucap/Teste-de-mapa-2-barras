@@ -4,6 +4,9 @@ Visualização 3D interativa do barracão de logística **Duas Barras**, montada
 "Duas Barras Arquitetônico – Caminho Seguro 2". Roda como app da Web no **Google Apps Script** e também como
 página HTML única. Um script do **Blender** gera o mesmo modelo para renders, vídeos ou exportação `.glb`.
 
+> Neste repositório também está a **Casa Jardim Primavera** (casa de 2 dormitórios modelada no Blender a partir
+> da planta em PDF), em uma pasta separada: veja [`casa-jardim-primavera/`](casa-jardim-primavera/README.md).
+
 ![Planta de referência](docs/planta-referencia.jpg)
 
 ## O que o modelo mostra

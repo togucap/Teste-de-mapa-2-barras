@@ -1,0 +1,302 @@
+<title>Casa Jardim Primavera 3D</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --bg: #efe9e1;
+    --panel: rgba(255, 252, 248, 0.86);
+    --panel-solid: #fffcf8;
+    --ink: #2b241e;
+    --muted: #7a6e63;
+    --line: #e2d8cc;
+    --accent: #9a6b43;
+    --accent-ink: #fffaf3;
+    --chip: #f4ede4;
+    --shadow: 0 8px 28px rgba(60, 42, 25, 0.12);
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-body: "Manrope", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --gap: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #17130f;
+      --panel: rgba(33, 28, 23, 0.86);
+      --panel-solid: #211c17;
+      --ink: #f1e9df;
+      --muted: #b2a493;
+      --line: #3a3129;
+      --accent: #d9a877;
+      --accent-ink: #1d150d;
+      --chip: #2b241e;
+      --shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #17130f;
+    --panel: rgba(33, 28, 23, 0.86);
+    --panel-solid: #211c17;
+    --ink: #f1e9df;
+    --muted: #b2a493;
+    --line: #3a3129;
+    --accent: #d9a877;
+    --accent-ink: #1d150d;
+    --chip: #2b241e;
+    --shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  }
+
+  html, body { height: 100%; margin: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 14px/1.45 var(--font-body);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  #app { position: relative; width: 100%; height: 100%; overflow: hidden; }
+  #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+  #labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+
+  .panel {
+    position: absolute;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .title {
+    top: calc(var(--gap) + env(safe-area-inset-top, 0px));
+    left: var(--gap);
+    padding: 14px 18px;
+    max-width: calc(100% - 2 * var(--gap) - 60px);
+  }
+  .eyebrow {
+    font: 600 10.5px/1 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .title h1 {
+    margin: 7px 0 3px;
+    font: 600 28px/1.05 var(--font-display);
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .title p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  .layers {
+    top: calc(var(--gap) + 118px + env(safe-area-inset-top, 0px));
+    left: var(--gap);
+    width: 236px;
+  }
+  .layers summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 12px 16px;
+    font: 700 11px/1 var(--font-body);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .layers summary::-webkit-details-marker { display: none; }
+  .layers summary::after { content: "–"; }
+  .layers:not([open]) summary::after { content: "+"; }
+  .layers .list { display: grid; gap: 2px; padding: 0 8px 10px; }
+  .toggle {
+    display: grid;
+    grid-template-columns: 1fr 30px;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .toggle:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+  .toggle input { position: absolute; opacity: 0; pointer-events: none; }
+  .switch { width: 30px; height: 18px; border-radius: 9px; background: var(--line); position: relative; transition: background 0.15s; }
+  .switch::after {
+    content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--panel-solid); transition: transform 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  .toggle input:checked ~ .switch { background: var(--accent); }
+  .toggle input:checked ~ .switch::after { transform: translateX(12px); }
+  .toggle input:focus-visible ~ .switch { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .stamp {
+    top: calc(var(--gap) + env(safe-area-inset-top, 0px));
+    right: var(--gap);
+    width: 268px;
+    overflow: hidden;
+  }
+  .stamp dl { display: grid; grid-template-columns: 1fr 1fr; margin: 0; }
+  .stamp .cell { padding: 11px 14px 12px; border-bottom: 1px solid var(--line); }
+  .stamp .cell:nth-child(odd) { border-right: 1px solid var(--line); }
+  .stamp dt { font: 600 10px/1.2 var(--font-body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .stamp dd { margin: 5px 0 0; font: 600 19px/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .stamp dd small { font: 500 11px var(--font-body); color: var(--muted); }
+  .stamp .row { display: flex; gap: 8px; padding: 12px 14px; align-items: center; }
+  .seg { display: inline-flex; background: var(--chip); border-radius: 9px; padding: 3px; gap: 2px; }
+  .seg button, .btn {
+    appearance: none; border: 0; cursor: pointer;
+    font: 600 12.5px/1 var(--font-body); color: var(--ink);
+    padding: 8px 11px; border-radius: 7px; background: transparent; white-space: nowrap;
+  }
+  .seg button[aria-pressed="true"] { background: var(--panel-solid); box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+  .btn { background: var(--accent); color: var(--accent-ink); flex: 1; }
+  .btn:hover { filter: brightness(1.06); }
+  .seg button:focus-visible, .btn:focus-visible, .views button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .stamp .note { padding: 0 14px 12px; font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+
+  .views {
+    bottom: calc(var(--gap) + env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 3px;
+    padding: 5px;
+    max-width: calc(100% - 2 * var(--gap));
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .views::-webkit-scrollbar { display: none; }
+  .views button {
+    appearance: none; border: 0; background: transparent; color: var(--ink);
+    font: 600 13px/1 var(--font-body); padding: 10px 13px; border-radius: 9px; cursor: pointer; white-space: nowrap;
+  }
+  .views button:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+  .views button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .views button.tour { background: var(--accent); color: var(--accent-ink); }
+  .views .sep { width: 1px; background: var(--line); margin: 6px 3px; flex: none; }
+
+  .lbl {
+    position: absolute; left: 0; top: 0;
+    transform: translate(-50%, -100%);
+    white-space: nowrap;
+    padding: 5px 9px 6px;
+    border-radius: 8px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    box-shadow: 0 2px 10px rgba(60, 42, 25, 0.1);
+    font: 600 12.5px/1.15 var(--font-body);
+    color: var(--ink);
+    text-align: center;
+    pointer-events: auto;
+    cursor: pointer;
+    will-change: transform;
+  }
+  .lbl small { display: block; font-weight: 500; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .lbl:hover { border-color: var(--accent); }
+
+  .hint {
+    position: absolute;
+    bottom: calc(var(--gap) + 62px + env(safe-area-inset-bottom, 0px));
+    left: 50%; transform: translateX(-50%);
+    padding: 7px 12px; border-radius: 999px;
+    background: var(--panel); border: 1px solid var(--line);
+    font-size: 12px; color: var(--muted);
+    pointer-events: none;
+    transition: opacity 0.4s;
+    white-space: nowrap;
+  }
+
+  #status {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    padding-inline: var(--gap);
+    text-align: center;
+    color: var(--muted);
+    font: 500 14px/1.5 var(--font-body);
+    background: var(--bg);
+  }
+
+  @media (max-width: 760px) {
+    .title { padding: 11px 14px; max-width: calc(100% - 2 * var(--gap) - 132px); }
+    .title h1 { font-size: 21px; }
+    .title p { display: none; }
+    .layers { top: calc(var(--gap) + 82px + env(safe-area-inset-top, 0px)); width: 206px; }
+    .stamp { display: none; }
+    .mobile-actions { display: flex !important; }
+    .eyebrow { font-size: 9.5px; }
+    .lbl { font-size: 11px; padding: 4px 7px; }
+    .lbl small { display: none; }
+  }
+  .mobile-actions {
+    display: none;
+    position: absolute;
+    right: var(--gap);
+    top: calc(var(--gap) + env(safe-area-inset-top, 0px));
+    flex-direction: column; gap: 6px; padding: 6px;
+  }
+  .mobile-actions .btn { flex: none; }
+</style>
+
+<div id="app">
+  <canvas id="scene" tabindex="0" aria-label="Modelo 3D interativo da casa. Arraste para girar, role ou pince para aproximar."></canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <header class="panel title">
+    <div class="eyebrow">Planta 1:75 · modelo 3D do Blender</div>
+    <h1>Casa Jardim Primavera</h1>
+    <p>2 dormitórios · lado esquerdo · porta da sala em vidro de correr</p>
+  </header>
+
+  <details class="panel layers" id="layers" open>
+    <summary>Camadas</summary>
+    <div class="list">
+      <label class="toggle"><input type="checkbox" data-opt="corte" checked><span>Paredes cortadas</span><span class="switch"></span></label>
+      <label class="toggle"><input type="checkbox" data-opt="moveis" checked><span>Móveis e decoração</span><span class="switch"></span></label>
+      <label class="toggle"><input type="checkbox" data-opt="teto"><span>Teto e sancas</span><span class="switch"></span></label>
+      <label class="toggle"><input type="checkbox" data-opt="telhado"><span>Telhado</span><span class="switch"></span></label>
+      <label class="toggle"><input type="checkbox" data-opt="rotulos" checked><span>Nomes dos cômodos</span><span class="switch"></span></label>
+      <label class="toggle"><input type="checkbox" data-opt="vizinho" checked><span>Casa vizinha e terreno</span><span class="switch"></span></label>
+    </div>
+  </details>
+
+  <section class="panel stamp" aria-label="Resumo da casa">
+    <dl>
+      <div class="cell"><dt>Área útil</dt><dd id="st-util">–</dd></div>
+      <div class="cell"><dt>Construída</dt><dd id="st-const">–</dd></div>
+      <div class="cell"><dt>Dimensões</dt><dd id="st-dims">–</dd></div>
+      <div class="cell"><dt>Pé-direito</dt><dd id="st-pd">–</dd></div>
+    </dl>
+    <div class="row">
+      <div class="seg" role="group" aria-label="Iluminação">
+        <button type="button" data-light="dia" aria-pressed="true">Dia</button>
+        <button type="button" data-light="noite" aria-pressed="false">Noite</button>
+      </div>
+      <button type="button" class="btn" data-door>Abrir porta</button>
+    </div>
+    <div class="note">Paredes tiradas do PDF da planta. Clique no nome de um cômodo para entrar nele.</div>
+  </section>
+
+  <div class="panel mobile-actions">
+    <div class="seg" role="group" aria-label="Iluminação">
+      <button type="button" data-light="dia" aria-pressed="true">Dia</button>
+      <button type="button" data-light="noite" aria-pressed="false">Noite</button>
+    </div>
+    <button type="button" class="btn" data-door>Abrir porta</button>
+  </div>
+
+  <nav class="panel views" id="views" aria-label="Vistas"></nav>
+  <div class="hint" id="hint">Arraste para girar · role ou pince para aproximar · botão direito para mover</div>
+
+  <div id="status">Carregando modelo 3D…</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<?!= include('Modelo'); ?>
+<?!= include('Viewer'); ?>
